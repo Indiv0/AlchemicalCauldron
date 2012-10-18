@@ -53,32 +53,42 @@ public class AlchemicalCauldron extends JavaPlugin {
     
     private void loadMaterials(FileConfiguration fileConfiguration, HashMap<Material, Double> materials, String section)
     {
+        // Defines the section of the configuration to be searched.
         ConfigurationSection configSection = fileConfiguration.getConfigurationSection(section);
         
+        // If the configuration section does not exist, outputs a warning.
         if(configSection == null) {
             getLogger().log(Level.WARNING, "No keys/values have been defined for the section \"" + section + "\"");
             return;
         }
-            
+        
+        // Gets all of the keys for the section.
         Set<String> keyList = configSection.getKeys(false);
         
         for(String materialID : keyList) {
+            // Attempts to get the material represented by the key.
             Material material = Material.matchMaterial(materialID);
             
+            // If the key is invalid, output as such.
             if(material == null || material == Material.AIR) {
                 getLogger().log(Level.WARNING, "AlCo config contains an invalid key: " + materialID);
             }
             else {
+                // Tries to lead the ratio value for that key.
                 double val = -1;
                 try {
                     val = Double.parseDouble((String) fileConfiguration.get(section + "." + materialID));
                 } catch(Exception ex) {
-                    getLogger().log(Level.WARNING, "AlCo config contains an invalid value for key: " + materialID);
+                    getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
                 }
                 if(val < 0 || val > 1)
-                    getLogger().log(Level.WARNING, "AlCo config contains an invalid value for key: " + materialID);
+                    getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
                 
-                materials.put(material, val);
+                // Makes sure an item is not being added twice, then adds the material and its value to the cache.
+                if (!materials.containsKey(material))
+                    materials.put(material, val);
+                else
+                    getLogger().log(Level.WARNING, "Config contains the same material twice. Will not be added again.");
             }
         }        
     }
