@@ -1,6 +1,7 @@
 package com.github.Indiv0.AlchemicalCauldron;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
@@ -11,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.MetricsLite;
 
 public class AlchemicalCauldron extends JavaPlugin {
     public final EntityInteractListener entityInteractListener = new EntityInteractListener(this);
@@ -31,9 +33,22 @@ public class AlchemicalCauldron extends JavaPlugin {
         loadMaterials(getConfig(), getInputMaterials(), "inputs");
         loadMaterials(getConfig(), outputMaterials, "outputs");
         
+        // Enable PluginMetrics.
+        enableMetrics();
+        
         // Prints a message to the server confirming successful initialization of the plugin.
         PluginDescriptionFile pdfFile = this.getDescription();
         getLogger().info(pdfFile.getName() + " " + pdfFile.getVersion() + " is enabled.");
+    }
+
+    private void enableMetrics()
+    {
+        try {
+            MetricsLite metrics = new MetricsLite(this);
+            metrics.start();
+        } catch (IOException ex) {
+            System.out.println("An error occured while appempting to connect to PluginMetrics.");
+        }
     }
     
     private void loadMaterials(FileConfiguration fileConfiguration, HashMap<Material, Double> materials, String section)
