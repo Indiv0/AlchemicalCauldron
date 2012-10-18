@@ -49,7 +49,7 @@ public class EntityInteractListener implements Listener {
         // If the conversion fails, delete the ItemStack.
         if(Math.random() > inputProbability) {
             // Sets a timer to despawn the "used up" item.
-            setItemDespawnTimer(thrownItem, 5);
+            setItemDespawnTimer(thrownItem, 3);
             return;
         }
         
@@ -60,19 +60,32 @@ public class EntityInteractListener implements Listener {
         if(newItemStack.getType() == Material.AIR)
             return;
         
-        // Sets the Item and sets its location to the centre of the CAULDRON.
-        Item item = thrownItem.getWorld().dropItem(new Location(thrownItem.getWorld(), targetBlock.getX() + 0.5, targetBlock.getY() + 1, targetBlock.getZ() + 0.5), newItemStack);
-        item.setPickupDelay(20);
-        
+        // Creates the timer which, when completed, will delete the "input" block and create the "output" block.
+        setItemCreationTimer(thrownItem, 
+                new Location(thrownItem.getWorld(), targetBlock.getX() + 0.5, targetBlock.getY() + 1, targetBlock.getZ() + 0.5), 
+                newItemStack, 3);
+    }
+
+    private void setItemCreationTimer(final Item previousItem, final Location loc, final ItemStack itemStack, final int seconds)
+    {
         // Sets a timer to despawn the "used up" item.
-        setItemDespawnTimer(thrownItem, 1);
+        setItemDespawnTimer(previousItem, seconds);
         
-        // Gives the item a slightly randomized vertical velocity.
-        Vector zero = new Vector();
-        zero.setY(0.3);
-        zero.setX(Vector.getRandom().getX() * 0.05);
-        zero.setZ(Vector.getRandom().getZ() * 0.05);
-        item.setVelocity(zero);
+        // Creates an Async task, which when run, creates the new item..
+        plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+            public void run() {
+                // Sets the Item and sets its location to the centre of the CAULDRON.
+                Item item = previousItem.getWorld().dropItem(loc, itemStack);
+                item.setPickupDelay(seconds);
+
+                // Gives the item a slightly randomized vertical velocity.
+                Vector zero = new Vector();
+                zero.setY(0.3);
+                zero.setX(Vector.getRandom().getX() * 0.05);
+                zero.setZ(Vector.getRandom().getZ() * 0.05);
+                item.setVelocity(zero);
+            }
+        }, seconds * 20);
     }
     
     private void setItemDespawnTimer(final Item item, int seconds)
