@@ -48,7 +48,7 @@ public class AlchemicalCauldron extends JavaPlugin {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
         } catch (IOException ex) {
-            System.out.println("An error occured while appempting to connect to PluginMetrics.");
+            System.out.println("An error occured while attempting to connect to PluginMetrics.");
         }
     }
     
