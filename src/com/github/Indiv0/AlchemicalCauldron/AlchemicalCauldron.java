@@ -2,6 +2,7 @@ package com.github.Indiv0.AlchemicalCauldron;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
@@ -70,7 +71,7 @@ public class AlchemicalCauldron extends JavaPlugin {
             Material material = Material.matchMaterial(materialID);
             
             // If the key is invalid, output as such.
-            if(material == null || material == Material.AIR) {
+            if (material == null || material == Material.AIR) {
                 getLogger().log(Level.WARNING, "AlCo config contains an invalid key: " + materialID);
             }
             else {
@@ -81,7 +82,14 @@ public class AlchemicalCauldron extends JavaPlugin {
                 } catch(Exception ex) {
                     getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
                 }
-                if(val < 0 || val > 1)
+                
+                // Reduce the precision to 2 decimal places.
+                DecimalFormat form = new DecimalFormat();
+                form.setMaximumFractionDigits(2);
+                form.setMinimumFractionDigits(0);
+                val = Double.parseDouble(form.format(val));
+                
+                if (val < 0 || val > 1)
                     getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
                 
                 // Makes sure an item is not being added twice, then adds the material and its value to the cache.

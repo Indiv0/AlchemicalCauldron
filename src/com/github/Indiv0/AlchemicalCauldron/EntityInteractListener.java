@@ -46,24 +46,26 @@ public class EntityInteractListener implements Listener {
         // Gets the probability for that input item.
         double inputProbability = plugin.getInputMaterials().get(thrownItemStack.getType());
         
-        // If the conversion fails, delete the ItemStack.
-        if(Math.random() > inputProbability) {
-            // Sets a timer to despawn the "used up" item.
-            setItemDespawnTimer(thrownItem, 3);
-            return;
+        for (int i = 1; i <= thrownItemStack.getAmount(); i++) {
+            // If the conversion fails, delete the ItemStack.
+            if(Math.random() > inputProbability) {
+                // Sets a timer to despawn the "used up" item.
+                setItemDespawnTimer(thrownItem, 3);
+                continue;
+            }
+            
+            // If the conversion was successful, makes a new ItemStack with a randomized (based on ratio) output item.
+            ItemStack newItemStack = new ItemStack(getObjectByProbability(plugin.getOutputMaterials().entrySet()), 1);
+            
+            // Possibly unessessary double-check to make sure the material is not AIR?
+            if(newItemStack.getType() == Material.AIR)
+                continue;
+            
+            // Creates the timer which, when completed, will delete the "input" block and create the "output" block.
+            setItemCreationTimer(thrownItem, 
+                    new Location(thrownItem.getWorld(), targetBlock.getX() + 0.5, targetBlock.getY() + 1, targetBlock.getZ() + 0.5), 
+                    newItemStack, 3);
         }
-        
-        // If the conversion was successful, makes a new ItemStack with a randomized (based on ratio) output item.
-        ItemStack newItemStack = new ItemStack(getObjectByProbability(plugin.getOutputMaterials().entrySet()), 1);
-        
-        // Possibly unessessary double-check to make sure the material is not AIR?
-        if(newItemStack.getType() == Material.AIR)
-            return;
-        
-        // Creates the timer which, when completed, will delete the "input" block and create the "output" block.
-        setItemCreationTimer(thrownItem, 
-                new Location(thrownItem.getWorld(), targetBlock.getX() + 0.5, targetBlock.getY() + 1, targetBlock.getZ() + 0.5), 
-                newItemStack, 3);
     }
 
     private void setItemCreationTimer(final Item previousItem, final Location loc, final ItemStack itemStack, final int seconds)
