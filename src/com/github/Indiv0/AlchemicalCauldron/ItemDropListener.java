@@ -29,7 +29,7 @@ public class ItemDropListener implements Listener {
         
         // Checks to make sure the block is a CAULDRON.
         try {
-            if(targetBlock.getType()  != Material.CAULDRON)
+            if(targetBlock.getType() != Material.CAULDRON)
                 return;
         } catch (NullPointerException ex) {
             return;

@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.MetricsLite;
 
 public class AlchemicalCauldron extends JavaPlugin {
-    public final ItemDropListener entityInteractListener = new ItemDropListener(this);
+    public final ItemDropListener itemDropListener = new ItemDropListener(this);
 
     private HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
     private HashMap<Material, Double> outputMaterials = new HashMap<Material, Double>();
@@ -26,11 +26,10 @@ public class AlchemicalCauldron extends JavaPlugin {
         PluginManager pm = getServer().getPluginManager();
 
         // Registers the blockListener with the PluginManager.
-        pm.registerEvents(this.entityInteractListener, this);
+        pm.registerEvents(this.itemDropListener, this);
         
         loadConfig();
         
-        //FileConfiguration probabilityConfig = loadConfig("config.yml");
         loadMaterials(getConfig(), getInputMaterials(), "inputs");
         loadMaterials(getConfig(), getOutputMaterials(), "outputs");
         
@@ -99,7 +98,7 @@ public class AlchemicalCauldron extends JavaPlugin {
                 continue;
             }
             
-            getOutputMaterials().put(material, val);
+            materials.put(material, val);
         }
     }
 
