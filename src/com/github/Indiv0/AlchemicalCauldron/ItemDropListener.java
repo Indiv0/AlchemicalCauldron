@@ -14,16 +14,16 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class EntityInteractListener implements Listener {
+public class ItemDropListener implements Listener {
     public static AlchemicalCauldron plugin;
 
-    public EntityInteractListener(AlchemicalCauldron instance) {
+    public ItemDropListener(AlchemicalCauldron instance) {
         plugin = instance;
     }
     
     // Create a method to handle/interact with item throwing events.
     @EventHandler
-    public void onEntityInteract(PlayerDropItemEvent event) {
+    public void onItemDrop(PlayerDropItemEvent event) {
         // Gets the block targetted by the player.
         Block targetBlock = event.getPlayer().getTargetBlock(null, 1);
         

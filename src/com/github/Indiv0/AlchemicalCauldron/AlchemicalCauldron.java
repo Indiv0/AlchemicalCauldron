@@ -16,7 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.MetricsLite;
 
 public class AlchemicalCauldron extends JavaPlugin {
-    public final EntityInteractListener entityInteractListener = new EntityInteractListener(this);
+    public final ItemDropListener entityInteractListener = new ItemDropListener(this);
 
     private HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
     private HashMap<Material, Double> outputMaterials = new HashMap<Material, Double>();
