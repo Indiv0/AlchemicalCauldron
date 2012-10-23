@@ -17,10 +17,10 @@ import org.mcstats.MetricsLite;
 
 public class AlchemicalCauldron extends JavaPlugin {
     public final EntityInteractListener entityInteractListener = new EntityInteractListener(this);
-    
+
     private HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
     private HashMap<Material, Double> outputMaterials = new HashMap<Material, Double>();
-
+        
     public void onEnable() {
         // Retrieves an instance of the PluginManager.
         PluginManager pm = getServer().getPluginManager();
@@ -32,7 +32,7 @@ public class AlchemicalCauldron extends JavaPlugin {
         
         //FileConfiguration probabilityConfig = loadConfig("config.yml");
         loadMaterials(getConfig(), getInputMaterials(), "inputs");
-        loadMaterials(getConfig(), outputMaterials, "outputs");
+        loadMaterials(getConfig(), getOutputMaterials(), "outputs");
         
         // Enable PluginMetrics.
         enableMetrics();
@@ -73,48 +73,51 @@ public class AlchemicalCauldron extends JavaPlugin {
             // If the key is invalid, output as such.
             if (material == null || material == Material.AIR) {
                 getLogger().log(Level.WARNING, "AlCo config contains an invalid key: " + materialID);
+                continue;
             }
-            else {
-                // Tries to lead the ratio value for that key.
-                double val = -1;
-                try {
-                    val = Double.parseDouble((String) fileConfiguration.get(section + "." + materialID));
-                } catch(Exception ex) {
-                    getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
-                }
-                
-                // Reduce the precision to 2 decimal places.
-                DecimalFormat form = new DecimalFormat();
-                form.setMaximumFractionDigits(2);
-                form.setMinimumFractionDigits(0);
-                val = Double.parseDouble(form.format(val));
-                
-                if (val < 0 || val > 1)
-                    getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
-                
-                // Makes sure an item is not being added twice, then adds the material and its value to the cache.
-                if (!materials.containsKey(material))
-                    materials.put(material, val);
-                else
-                    getLogger().log(Level.WARNING, "Config contains the same material twice. Will not be added again.");
-            }
-        }        
-    }
-    
-    private void loadConfig()
-    {
-        if(!(new File("plugins/AlchemicalCauldron/config.yml").exists())) {
-            // Create some default configuration values.
-            getConfig().addDefault("inputs.2", "0.01");
-            getConfig().addDefault("inputs.cobblestone", "0.2");
-            getConfig().addDefault("outputs.iron_ingot", "0.6");
             
-            getConfig().options().copyDefaults(true);
+            // Tries to lead the ratio value for that key.
+            double val = -1;
+            try {
+                val = Double.parseDouble((String) fileConfiguration.get(section + "." + materialID));
+            } catch(Exception ex) {
+                getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
+            }
+            
+            // Reduce the precision to 2 decimal places.
+            DecimalFormat form = new DecimalFormat();
+            form.setMaximumFractionDigits(2);
+            form.setMinimumFractionDigits(0);
+            val = Double.parseDouble(form.format(val));
+            
+            if (val < 0 || val > 1)
+                getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
+            
+            // Makes sure an item is not being added twice, then adds the material and its value to the cache.
+            if (getOutputMaterials().containsKey(material)) {
+                getLogger().log(Level.WARNING, "Config contains the same material twice. Will not be added again.");
+                continue;
+            }
+            
+            getOutputMaterials().put(material, val);
         }
-        
-        saveConfig();
     }
 
+    private void loadConfig() {
+        // If the config.yml already exists, do not create a default one.
+        if(new File("plugins/AlchemicalCauldron/config.yml").exists())
+            return;
+        
+        // Create some default configuration values.
+        getConfig().addDefault("inputs.2", "0.01");
+        getConfig().addDefault("inputs.cobblestone", "0.2");
+        getConfig().addDefault("outputs.iron_ingot", "0.6");
+        
+        getConfig().options().copyDefaults(true);
+
+        saveConfig();
+    }
+    
     public HashMap<Material, Double> getInputMaterials() {
         return inputMaterials;
     }
