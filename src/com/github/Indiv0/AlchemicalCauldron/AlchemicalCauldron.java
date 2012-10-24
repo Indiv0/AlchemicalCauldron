@@ -19,16 +19,16 @@ public class AlchemicalCauldron extends JavaPlugin {
 
     public final ItemDropListener itemDropListener = new ItemDropListener(this);
 
-    private HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
-    private HashMap<Material, Double> outputMaterials = new HashMap<Material, Double>();
+    private final HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
+    private final HashMap<Material, Double> outputMaterials = new HashMap<Material, Double>();
 
     @Override
-    public void onEnable () {
+    public void onEnable() {
         // Retrieves an instance of the PluginManager.
         PluginManager pm = getServer().getPluginManager();
 
         // Registers the blockListener with the PluginManager.
-        pm.registerEvents(this.itemDropListener, this);
+        pm.registerEvents(itemDropListener, this);
 
         loadConfig();
 
@@ -40,11 +40,11 @@ public class AlchemicalCauldron extends JavaPlugin {
 
         // Prints a message to the server confirming successful initialization
         // of the plugin.
-        PluginDescriptionFile pdfFile = this.getDescription();
+        PluginDescriptionFile pdfFile = getDescription();
         getLogger().info(pdfFile.getName() + " " + pdfFile.getVersion() + " is enabled.");
     }
 
-    private void enableMetrics ()
+    private void enableMetrics()
     {
         try {
             MetricsLite metrics = new MetricsLite(this);
@@ -54,7 +54,7 @@ public class AlchemicalCauldron extends JavaPlugin {
         }
     }
 
-    private void loadMaterials (FileConfiguration fileConfiguration, HashMap<Material, Double> materials, String section)
+    private void loadMaterials(FileConfiguration fileConfiguration, HashMap<Material, Double> materials, String section)
     {
         // Defines the section of the configuration to be searched.
         ConfigurationSection configSection = fileConfiguration.getConfigurationSection(section);
@@ -106,7 +106,7 @@ public class AlchemicalCauldron extends JavaPlugin {
         }
     }
 
-    private void loadConfig () {
+    private void loadConfig() {
         // If the config.yml already exists, do not create a default one.
         if (new File("plugins/AlchemicalCauldron/config.yml").exists())
             return;
@@ -121,11 +121,11 @@ public class AlchemicalCauldron extends JavaPlugin {
         saveConfig();
     }
 
-    public HashMap<Material, Double> getInputMaterials () {
+    public HashMap<Material, Double> getInputMaterials() {
         return inputMaterials;
     }
 
-    public HashMap<Material, Double> getOutputMaterials () {
+    public HashMap<Material, Double> getOutputMaterials() {
         return outputMaterials;
     }
 }

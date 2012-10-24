@@ -18,13 +18,13 @@ public class ItemDropListener implements Listener {
 
     public static AlchemicalCauldron plugin;
 
-    public ItemDropListener (AlchemicalCauldron instance) {
+    public ItemDropListener(AlchemicalCauldron instance) {
         plugin = instance;
     }
 
     // Create a method to handle/interact with item throwing events.
     @EventHandler
-    public void onItemDrop (PlayerDropItemEvent event) {
+    public void onItemDrop(PlayerDropItemEvent event) {
         // Gets the block targetted by the player.
         Block targetBlock = event.getPlayer().getTargetBlock(null, 1);
 
@@ -72,7 +72,7 @@ public class ItemDropListener implements Listener {
         }
     }
 
-    private void setItemCreationTimer (final Item previousItem, final Location loc, final ItemStack itemStack, final int seconds)
+    private void setItemCreationTimer(final Item previousItem, final Location loc, final ItemStack itemStack, final int seconds)
     {
         // Sets a timer to despawn the "used up" item.
         setItemDespawnTimer(previousItem, seconds);
@@ -81,7 +81,7 @@ public class ItemDropListener implements Listener {
         plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
 
             @Override
-            public void run () {
+            public void run() {
                 // Sets the Item and sets its location to the centre of the
                 // CAULDRON.
                 Item item = previousItem.getWorld().dropItem(loc, itemStack);
@@ -97,7 +97,7 @@ public class ItemDropListener implements Listener {
         }, seconds * 20);
     }
 
-    private void setItemDespawnTimer (final Item item, int seconds)
+    private void setItemDespawnTimer(final Item item, int seconds)
     {
         // Set the item pickup delay to a the requested value + 5s (for safety)
         // so
@@ -108,7 +108,7 @@ public class ItemDropListener implements Listener {
         plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
 
             @Override
-            public void run () {
+            public void run() {
                 try {
                     item.remove();
                 } catch (Exception ex) {
@@ -117,7 +117,7 @@ public class ItemDropListener implements Listener {
         }, seconds * 20);
     }
 
-    private <K> K getObjectByProbability (Set<Entry<K, Double>> set)
+    private <K> K getObjectByProbability(Set<Entry<K, Double>> set)
     {
         // Selects a randomized output value based on its probability.
         while (true) {
