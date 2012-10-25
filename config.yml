@@ -1,0 +1,19 @@
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
+#  Configuration file for "AlchemicalCauldron".  #
+#  @author Nikita Pekin (Indivisible0)           #
+#-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=#
+
+#======== Material Settings ==========#
+## Defines input materials for the cauldron
+# (Note: probabilities can be from 0.00 to 1.00)
+# Materials can be any (except air), and defined by either ID or name.
+inputs:
+  '2': '0.01'
+  cobblestone: '0.2'
+
+## Defines output materials for the cauldron
+# (Note: weights can be from 0.00 to 1.00)
+# Materials can be any (except air), and defined by either ID or name.
+outputs:
+  iron_ingot: '0.6'
+  gold_ingot: '0.2'
