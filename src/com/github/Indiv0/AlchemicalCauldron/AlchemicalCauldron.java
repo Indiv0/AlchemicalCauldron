@@ -1,7 +1,11 @@
 package com.github.Indiv0.AlchemicalCauldron;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Set;
@@ -10,6 +14,7 @@ import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,6 +27,26 @@ public class AlchemicalCauldron extends JavaPlugin {
     private final HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
     private final HashMap<Material, Double> outputMaterials = new HashMap<Material, Double>();
 
+    private File mainDataFolder;
+    private File configFile;
+    private FileConfiguration settings;
+
+    @Override
+    public void onLoad() {
+        // Gets the main folder for data to be stored in.
+        mainDataFolder = getDataFolder();
+
+        // Checks to make sure that the main folder for data stored in exists.
+        // If not, creates it.
+        checkFolderAndCreate(mainDataFolder);
+
+        // Creates/loads configuration and settings.
+        loadConfig(configFile);
+
+        // Enable PluginMetrics.
+        enableMetrics();
+    }
+
     @Override
     public void onEnable() {
         // Retrieves an instance of the PluginManager.
@@ -30,18 +55,19 @@ public class AlchemicalCauldron extends JavaPlugin {
         // Registers the blockListener with the PluginManager.
         pm.registerEvents(itemDropListener, this);
 
-        loadConfig();
-
-        loadMaterials(getConfig(), getInputMaterials(), "inputs");
-        loadMaterials(getConfig(), getOutputMaterials(), "outputs");
-
-        // Enable PluginMetrics.
-        enableMetrics();
+        loadMaterials(getInputMaterials(), "inputs");
+        loadMaterials(getOutputMaterials(), "outputs");
 
         // Prints a message to the server confirming successful initialization
         // of the plugin.
         PluginDescriptionFile pdfFile = getDescription();
         getLogger().info(pdfFile.getName() + " " + pdfFile.getVersion() + " is enabled.");
+    }
+
+    @Override
+    public void onDisable() {
+        // Cancels any tasks scheduled by this plugin.
+        getServer().getScheduler().cancelTasks(this);
     }
 
     private void enableMetrics()
@@ -50,14 +76,14 @@ public class AlchemicalCauldron extends JavaPlugin {
             MetricsLite metrics = new MetricsLite(this);
             metrics.start();
         } catch (IOException ex) {
-            System.out.println("An error occured while attempting to connect to PluginMetrics.");
+            logException(ex, Level.WARNING, "An error occured while attempting to connect to PluginMetrics.");
         }
     }
 
-    private void loadMaterials(FileConfiguration fileConfiguration, HashMap<Material, Double> materials, String section)
+    private void loadMaterials(HashMap<Material, Double> materials, String section)
     {
         // Defines the section of the configuration to be searched.
-        ConfigurationSection configSection = fileConfiguration.getConfigurationSection(section);
+        ConfigurationSection configSection = settings.getConfigurationSection(section);
 
         // If the configuration section does not exist, outputs a warning.
         if (configSection == null) {
@@ -81,8 +107,9 @@ public class AlchemicalCauldron extends JavaPlugin {
             // Tries to lead the ratio value for that key.
             double val = -1;
             try {
-                val = Double.parseDouble((String) fileConfiguration.get(section + "." + materialID));
+                val = Double.parseDouble((String) settings.get(section + "." + materialID));
             } catch (Exception ex) {
+                ex.printStackTrace(System.out);
                 getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
             }
 
@@ -106,19 +133,67 @@ public class AlchemicalCauldron extends JavaPlugin {
         }
     }
 
-    private void loadConfig() {
-        // If the config.yml already exists, do not create a default one.
-        if (new File("plugins/AlchemicalCauldron/config.yml").exists())
-            return;
+    private void loadConfig(File configFile) {
+        configFile = new File(mainDataFolder, "config.yml");
 
-        // Create some default configuration values.
-        getConfig().addDefault("inputs.2", "0.01");
-        getConfig().addDefault("inputs.cobblestone", "0.2");
-        getConfig().addDefault("outputs.iron_ingot", "0.6");
+        try {
+            // Creates the configuration file if it doesn't exist.
+            if (!configFile.exists()) {
+                getLogger().log(Level.INFO, "No default config file exists, creating one.");
+                createDefaultConfigFile(configFile);
+            }
 
-        getConfig().options().copyDefaults(true);
+            // Initializes the configuration and populates it with settings.
+            settings = new YamlConfiguration();
+            settings.load(configFile);
+        } catch (Exception ex) {
+            logException(ex, Level.WARNING, "Failed to load configuration.");
+        }
+    }
 
-        saveConfig();
+    public void createDefaultConfigFile(File configFile) {
+        BufferedReader bReader = null;
+        BufferedWriter bWriter = null;
+        String line;
+
+        try {
+            // Opens a stream in order to access the config.yml stored in the
+            // jar.
+            bReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/config.yml")));
+            bWriter = new BufferedWriter(new FileWriter(configFile));
+
+            // Writes all of the lines from the built in config.yml to the new
+            // one.
+            while ((line = bReader.readLine()) != null) {
+                bWriter.write(line);
+                bWriter.newLine();
+            }
+        } catch (Exception ex) {
+            logException(ex, Level.WARNING, "Failed to create default config.yml");
+        } finally {
+            try {
+                // Confirm the streams are closed.
+                if (bReader != null) bReader.close();
+                if (bWriter != null) bWriter.close();
+            } catch (Exception ex) {
+                logException(ex, Level.WARNING, "Failed to close buffers while writing default config.yml");
+            }
+        }
+    }
+
+    public boolean checkFolderAndCreate(File toCheck) {
+        // Check to see if the directory exists, creating it if it doesn't.
+        if (!toCheck.exists()) try {
+            if (toCheck.mkdirs()) return true;
+        } catch (Exception ex) {
+            logException(ex, Level.WARNING, "Data folder could not be created.");
+        }
+        return false;
+    }
+
+    public void logException(Exception ex, Level level, String message) {
+        ex.printStackTrace(System.out);
+        getLogger().log(level, message);
     }
 
     public HashMap<Material, Double> getInputMaterials() {
