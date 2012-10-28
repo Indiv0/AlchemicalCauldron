@@ -9,7 +9,7 @@
 # (Note: probabilities can be from 0.00 to 1.00)
 # Materials can be any (except air), and defined by either ID or name.
 inputs:
-  '2': '0.01'
+  '3': '0.7'
   cobblestone: '0.2'
 
 ## Defines output materials for the cauldron
