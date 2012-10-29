@@ -1,3 +1,7 @@
+/**
+ *
+ * @author Indivisible0
+ */
 package com.github.Indiv0.AlchemicalCauldron;
 
 import java.util.Map;
@@ -15,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class ItemDropListener implements Listener {
-
     public static AlchemicalCauldron plugin;
 
     public ItemDropListener(AlchemicalCauldron instance) {
