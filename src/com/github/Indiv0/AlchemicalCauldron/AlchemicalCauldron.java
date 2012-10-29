@@ -19,7 +19,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.MetricsLite;
@@ -61,11 +60,6 @@ public class AlchemicalCauldron extends JavaPlugin {
 
         loadMaterials(getInputMaterials(), "inputs");
         loadMaterials(getOutputMaterials(), "outputs");
-
-        // Prints a message to the server confirming successful initialization
-        // of the plugin.
-        PluginDescriptionFile pdfFile = getDescription();
-        getLogger().info(pdfFile.getName() + " " + pdfFile.getVersion() + " is enabled.");
     }
 
     @Override
