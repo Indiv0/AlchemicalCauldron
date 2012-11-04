@@ -21,7 +21,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.MetricsLite;
+
+import com.github.Indiv0.AlchemicalCauldron.util.Metrics;
 
 public class AlchemicalCauldron extends JavaPlugin {
 
@@ -71,7 +72,7 @@ public class AlchemicalCauldron extends JavaPlugin {
     private void enableMetrics()
     {
         try {
-            MetricsLite metrics = new MetricsLite(this);
+            Metrics metrics = new Metrics(this);
             metrics.start();
         } catch (IOException ex) {
             logException(ex, Level.WARNING, "An error occured while attempting to connect to PluginMetrics.");
