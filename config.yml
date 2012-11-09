@@ -16,5 +16,15 @@ inputs:
 # (Note: weights can be from 0.00 to 1.00)
 # Materials can be any (except air), and defined by either ID or name.
 outputs:
-  iron_ingot: '0.6'
-  gold_ingot: '0.2'
+  '3':
+    iron_ingot: '0.6'
+  cobblestone:
+    iron_ingot: '0.7'
+    gold_ingot: '0.3'
+    diamond: '0.05'
+
+###############################################
+##   Internal Settings (Read: DO NOT EDIT)   ##
+###############################################
+
+version: 1.3.1
