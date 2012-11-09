@@ -108,7 +108,7 @@ public class ItemDropListener implements Listener {
         item.setPickupDelay((seconds + 5) * 20);
 
         // Creates an Async task, which when run, deletes the item.
-        plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
             @Override
             public void run() {
