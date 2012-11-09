@@ -42,13 +42,14 @@ public class ItemDropListener implements Listener {
         // Gets the thrown item and converts it into a usable ItemStack.
         Item thrownItem = event.getItemDrop();
         ItemStack thrownItemStack = thrownItem.getItemStack();
+        Material thrownItemStackMaterial = thrownItemStack.getType();
 
         // Checks to make sure the ItemStack contains a valid input material.
-        if (!plugin.getInputMaterials().containsKey(thrownItemStack.getType()))
+        if (!plugin.getInputMaterials().containsKey(thrownItemStackMaterial))
             return;
 
         // Gets the probability for that input item.
-        double inputProbability = plugin.getInputMaterials().get(thrownItemStack.getType());
+        double inputProbability = plugin.getInputMaterials().get(thrownItemStackMaterial);
 
         for (int i = 1; i <= thrownItemStack.getAmount(); i++) {
             // If the conversion fails, delete the ItemStack.
@@ -60,7 +61,7 @@ public class ItemDropListener implements Listener {
 
             // If the conversion was successful, makes a new ItemStack with a
             // randomized (based on ratio) output item.
-            ItemStack newItemStack = new ItemStack(getObjectByProbability(plugin.getOutputMaterials().entrySet()), 1);
+            ItemStack newItemStack = new ItemStack(getObjectByProbability(plugin.getMaterialMatches(thrownItemStackMaterial).entrySet()), 1);
 
             // Possibly unessessary double-check to make sure the material is
             // not AIR?

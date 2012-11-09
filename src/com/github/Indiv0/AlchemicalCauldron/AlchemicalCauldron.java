@@ -29,7 +29,7 @@ public class AlchemicalCauldron extends JavaPlugin {
     public final ItemDropListener itemDropListener = new ItemDropListener(this);
 
     private final HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
-    private final HashMap<Material, Double> outputMaterials = new HashMap<Material, Double>();
+    private final HashMap<Material, HashMap<Material, Double>> materialMatches = new HashMap<Material, HashMap<Material, Double>>();
 
     private File mainDataFolder;
     private File configFile;
@@ -59,8 +59,8 @@ public class AlchemicalCauldron extends JavaPlugin {
         // Registers the blockListener with the PluginManager.
         pm.registerEvents(itemDropListener, this);
 
-        loadMaterials(getInputMaterials(), "inputs");
-        loadMaterials(getOutputMaterials(), "outputs");
+        loadInputMaterials("inputs");
+        loadOutputMaterials("outputs");
     }
 
     @Override
@@ -79,57 +79,127 @@ public class AlchemicalCauldron extends JavaPlugin {
         }
     }
 
-    private void loadMaterials(HashMap<Material, Double> materials, String section)
-    {
+    private void loadInputMaterials(String section) {
+        Set<String> keyList = getConfigurationSectionKeySet(section);
+
+        for (String materialID : keyList) {
+            // Attempts to get the material represented by the key.
+            Material material = Material.matchMaterial(materialID);
+
+            // Checks to make sure the material is legitimate and accepted by
+            // the plugin prior to proceeding.
+            if (!isAllowedMaterial(material))
+                continue;
+
+            // Gets the probability value of the provided material.
+            double val = getAndParseConfigDouble(section, materialID);
+
+            // Makes sure that the probability value falls within the expected
+            // range.
+            if (val < 0 || val > 1) {
+                getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
+                continue;
+            }
+
+            // Adds the material/probability key/value set to the material
+            // cache.
+            getInputMaterials().put(material, val);
+        }
+    }
+
+    private void loadOutputMaterials(String section) {
+        Set<String> keyList = getConfigurationSectionKeySet(section);
+
+        for (String materialID : keyList) {
+            // Attempts to get the material represented by the key.
+            Material material = Material.matchMaterial(materialID);
+
+            // Checks to make sure the material is legitimate and accepted by
+            // the plugin prior to proceeding.
+            if (!isAllowedMaterial(material))
+                continue;
+
+            // Gets the secondary material list.
+            Set<String> outputList = getConfigurationSectionKeySet(section + "." + materialID);
+
+            for (String outputID : outputList) {
+                // Attempts to get the material represented by the key.
+                Material outputMaterial = Material.matchMaterial(outputID);
+
+                // Checks to make sure the material is legitimate and accepted
+                // by
+                // the plugin prior to proceeding.
+                if (!isAllowedMaterial(material))
+                    continue;
+
+                // Gets the probability value of the provided material.
+                double val = getAndParseConfigDouble(section, materialID);
+
+                // Makes sure that the probability value falls within the
+                // expected
+                // range.
+                if (val < 0 || val > 1) {
+                    getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
+                    continue;
+                }
+
+                // Adds the material/probability key/value set to the material
+                // cache.
+                getMaterialMatches(outputMaterial).put(outputMaterial, val);
+            }
+        }
+    }
+
+    private boolean isAllowedMaterial(Material material) {
+        // If the key is invalid, output as such.
+        if (material == null || material == Material.AIR) {
+            getLogger().log(Level.WARNING, "Config contains an invalid key.");
+            return false;
+        }
+
+        // Makes sure an item is not being added twice, then adds the
+        // material and its value to the cache.
+        if (getInputMaterials().containsKey(material)) {
+            getLogger().log(Level.WARNING, "Config contains the material " + material.toString() + " twice. It will not be added again.");
+            return false;
+        }
+
+        return true;
+    }
+
+    private double getAndParseConfigDouble(String section, String key) {
+        // Tries to lead the ratio value for that key.
+        double val = -1;
+        try {
+            val = Double.parseDouble((String) settings.get(section + "." + key));
+        } catch (Exception ex) {
+            ex.printStackTrace(System.out);
+            getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + key);
+        }
+
+        // Reduce the precision to 2 decimal places.
+        DecimalFormat form = new DecimalFormat();
+        form.setMaximumFractionDigits(2);
+        form.setMinimumFractionDigits(0);
+        val = Double.parseDouble(form.format(val));
+
+        return val;
+    }
+
+    private Set<String> getConfigurationSectionKeySet(String section) {
         // Defines the section of the configuration to be searched.
         ConfigurationSection configSection = settings.getConfigurationSection(section);
 
         // If the configuration section does not exist, outputs a warning.
         if (configSection == null) {
             getLogger().log(Level.WARNING, "No keys/values have been defined for the section \"" + section + "\"");
-            return;
+            return null;
         }
 
         // Gets all of the keys for the section.
         Set<String> keyList = configSection.getKeys(false);
 
-        for (String materialID : keyList) {
-            // Attempts to get the material represented by the key.
-            Material material = Material.matchMaterial(materialID);
-
-            // If the key is invalid, output as such.
-            if (material == null || material == Material.AIR) {
-                getLogger().log(Level.WARNING, "AlCo config contains an invalid key: " + materialID);
-                continue;
-            }
-
-            // Tries to lead the ratio value for that key.
-            double val = -1;
-            try {
-                val = Double.parseDouble((String) settings.get(section + "." + materialID));
-            } catch (Exception ex) {
-                ex.printStackTrace(System.out);
-                getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
-            }
-
-            // Reduce the precision to 2 decimal places.
-            DecimalFormat form = new DecimalFormat();
-            form.setMaximumFractionDigits(2);
-            form.setMinimumFractionDigits(0);
-            val = Double.parseDouble(form.format(val));
-
-            if (val < 0 || val > 1)
-                getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
-
-            // Makes sure an item is not being added twice, then adds the
-            // material and its value to the cache.
-            if (getOutputMaterials().containsKey(material)) {
-                getLogger().log(Level.WARNING, "Config contains the same material twice. Will not be added again.");
-                continue;
-            }
-
-            materials.put(material, val);
-        }
+        return keyList;
     }
 
     private void loadConfig(File configFile) {
@@ -145,9 +215,30 @@ public class AlchemicalCauldron extends JavaPlugin {
             // Initializes the configuration and populates it with settings.
             settings = new YamlConfiguration();
             settings.load(configFile);
+
+            // Makes sure the configuration file is up to date. If not, updates
+            // it.
+            if (!checkSettingsVersion(getDescription().getVersion()))
+                createDefaultConfigFile(configFile);
         } catch (Exception ex) {
             logException(ex, Level.WARNING, "Failed to load configuration.");
         }
+    }
+
+    public boolean checkSettingsVersion(String requiredVersion) {
+        // Get the version information from the file.
+        String configVersion = settings.getString("version", null);
+
+        // Check we got a version from the config file.
+        if (configVersion == null) {
+            logException(Level.WARNING, "Failed to retrieve the version of the configuration file.");
+            return false;
+        } else if (!configVersion.equals(requiredVersion)) {
+            logException(Level.WARNING, "Configuration is out of date, updating.");
+            return false;
+        }
+
+        return true;
     }
 
     public void createDefaultConfigFile(File configFile) {
@@ -190,6 +281,10 @@ public class AlchemicalCauldron extends JavaPlugin {
         return false;
     }
 
+    public void logException(Level level, String message) {
+        getLogger().log(level, message);
+    }
+
     public void logException(Exception ex, Level level, String message) {
         ex.printStackTrace(System.out);
         getLogger().log(level, message);
@@ -199,7 +294,11 @@ public class AlchemicalCauldron extends JavaPlugin {
         return inputMaterials;
     }
 
-    public HashMap<Material, Double> getOutputMaterials() {
-        return outputMaterials;
+    public HashMap<Material, HashMap<Material, Double>> getOutputMaterials() {
+        return materialMatches;
+    }
+
+    public HashMap<Material, Double> getMaterialMatches(Material inputMaterial) {
+        return materialMatches.get(inputMaterial);
     }
 }
