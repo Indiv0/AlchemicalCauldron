@@ -86,9 +86,10 @@ public class AlchemicalCauldron extends JavaPlugin {
             // Attempts to get the material represented by the key.
             Material material = Material.matchMaterial(materialID);
 
-            // Checks to make sure the material is legitimate and accepted by
+            // Checks to make sure the material is legitimate, has not been
+            // entered twice, and is accepted by
             // the plugin prior to proceeding.
-            if (!isAllowedMaterial(material))
+            if (!isAllowedMaterial(getInputMaterials(), material))
                 continue;
 
             // Gets the probability value of the provided material.
@@ -114,10 +115,15 @@ public class AlchemicalCauldron extends JavaPlugin {
             // Attempts to get the material represented by the key.
             Material material = Material.matchMaterial(materialID);
 
-            // Checks to make sure the material is legitimate and accepted by
+            // Checks to make sure the material is legitimate, has not been
+            // entered twice, and is accepted by
             // the plugin prior to proceeding.
-            if (!isAllowedMaterial(material))
+            if (!isAllowedMaterial(getOutputMaterials(), material))
                 continue;
+
+            // Adds the input material and its corresponding HashMap of possible
+            // outputs to the cache.
+            getOutputMaterials().put(material, new HashMap<Material, Double>());
 
             // Gets the secondary material list.
             Set<String> outputList = getConfigurationSectionKeySet(section + "." + materialID);
@@ -126,18 +132,17 @@ public class AlchemicalCauldron extends JavaPlugin {
                 // Attempts to get the material represented by the key.
                 Material outputMaterial = Material.matchMaterial(outputID);
 
-                // Checks to make sure the material is legitimate and accepted
-                // by
+                // Checks to make sure the material is legitimate, has not been
+                // entered twice, and is accepted by
                 // the plugin prior to proceeding.
-                if (!isAllowedMaterial(material))
+                if (!isAllowedMaterial(getMaterialMatches(material), outputMaterial))
                     continue;
 
                 // Gets the probability value of the provided material.
-                double val = getAndParseConfigDouble(section, materialID);
+                double val = getAndParseConfigDouble(section + "." + materialID, outputID);
 
                 // Makes sure that the probability value falls within the
-                // expected
-                // range.
+                // expected range.
                 if (val < 0 || val > 1) {
                     getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + materialID);
                     continue;
@@ -145,12 +150,12 @@ public class AlchemicalCauldron extends JavaPlugin {
 
                 // Adds the material/probability key/value set to the material
                 // cache.
-                getMaterialMatches(outputMaterial).put(outputMaterial, val);
+                getMaterialMatches(material).put(outputMaterial, val);
             }
         }
     }
 
-    private boolean isAllowedMaterial(Material material) {
+    private <K> boolean isAllowedMaterial(HashMap<Material, K> materialList, Material material) {
         // If the key is invalid, output as such.
         if (material == null || material == Material.AIR) {
             getLogger().log(Level.WARNING, "Config contains an invalid key.");
@@ -159,7 +164,7 @@ public class AlchemicalCauldron extends JavaPlugin {
 
         // Makes sure an item is not being added twice, then adds the
         // material and its value to the cache.
-        if (getInputMaterials().containsKey(material)) {
+        if (materialList.containsKey(material)) {
             getLogger().log(Level.WARNING, "Config contains the material " + material.toString() + " twice. It will not be added again.");
             return false;
         }
