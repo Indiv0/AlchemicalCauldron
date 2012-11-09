@@ -81,7 +81,7 @@ public class ItemDropListener implements Listener {
         setItemDespawnTimer(previousItem, seconds);
 
         // Creates an Async task, which when run, creates the new item..
-        plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, new Runnable() {
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
             @Override
             public void run() {
