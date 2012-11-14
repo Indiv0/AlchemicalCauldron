@@ -25,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.github.Indiv0.AlchemicalCauldron.util.Metrics;
 
 public class AlchemicalCauldron extends JavaPlugin {
+    private final String CONFIG_VERSION = "1.3.1";
 
     public final ItemDropListener itemDropListener = new ItemDropListener(this);
 
@@ -223,7 +224,7 @@ public class AlchemicalCauldron extends JavaPlugin {
 
             // Makes sure the configuration file is up to date. If not, updates
             // it.
-            if (!checkSettingsVersion(getDescription().getVersion()))
+            if (!checkSettingsVersion(CONFIG_VERSION))
                 createDefaultConfigFile(configFile);
         } catch (Exception ex) {
             logException(ex, Level.WARNING, "Failed to load configuration.");
