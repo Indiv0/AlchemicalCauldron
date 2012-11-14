@@ -9,7 +9,7 @@ permissions:
   alchemicalcauldron.*:
     description: Controls all AlchemicalCauldron permissions
     children:
-      alchemicalcauldron.all: true
+      alchemicalcauldron.use: true
   alchemicalcauldron.use:
     description: Controls whether or not the user can use AlchemicalCauldron
     default: true
