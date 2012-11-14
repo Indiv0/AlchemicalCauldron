@@ -39,6 +39,11 @@ public class ItemDropListener implements Listener {
             return;
         }
 
+        // If the player does not have permissions to use AlchemicalCauldron,
+        // cancels the event.
+        if (!event.getPlayer().hasPermission("alchemicalcauldron.use"))
+            return;
+
         // Gets the thrown item and converts it into a usable ItemStack.
         Item thrownItem = event.getItemDrop();
         ItemStack thrownItemStack = thrownItem.getItemStack();
