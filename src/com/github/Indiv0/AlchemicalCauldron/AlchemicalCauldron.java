@@ -22,7 +22,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.Indiv0.AlchemicalCauldron.util.Metrics;
+import com.github.Indiv0.util.Metrics;
 
 public class AlchemicalCauldron extends JavaPlugin {
     private final String CONFIG_VERSION = "1.3.1";

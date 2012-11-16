@@ -26,7 +26,7 @@
  * either expressed or implied, of anybody else.
  */
 
-package com.github.Indiv0.AlchemicalCauldron.util;
+package com.github.Indiv0.util;
 
 import java.io.BufferedReader;
 import java.io.File;
