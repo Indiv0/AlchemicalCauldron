@@ -1,13 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.Indiv0</groupId>
   <artifactId>alchemicalcauldron</artifactId>
   <version>1.3.2</version>
-  <name>AlchemicalCauldron</name>
-  <url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
-  <description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
   <packaging>jar</packaging>
+  <name>AlchemicalCauldron</name>
+  <description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
+  <url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
 
   <!-- Repositories -->
   <repositories>
@@ -55,6 +56,34 @@
           <source>1.6</source>
           <target>1.6</target>
         </configuration>
+      </plugin>
+      <!-- Shading -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <!-- We want to bundle in BukkitUtil -->
+        <version>1.6</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>com.github.Indiv0:bukkitutils</include>
+                </includes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>com.github.Indiv0.BukkitUtils</pattern>
+                  <shadedPattern>com.github.Indiv0.AlchemicalCauldron.Util</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
