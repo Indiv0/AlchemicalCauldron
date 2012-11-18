@@ -1,6 +1,6 @@
 name: AlchemicalCauldron
 main: com.github.indiv0.alchemicalcauldron.AlchemicalCauldron
-version: 1.3.2
+version: 1.4.0
 author: Indiv0
 description: A plugin for using the AlchemicalCauldron to convert items.
 dev-url: http://github.com/Indiv0/AlchemicalCauldron/
