@@ -7,9 +7,9 @@ items thrown into a cauldron into other items (e.g. dirt into iron ore).
 Download:
 --------------------
 
-You can find the latest release [here](https://github.com/Indiv0/indiv0-mvn-repo/raw/master/snapshots/com/github/Indiv0/alchemicalcauldron/1.3.2/alchemicalcauldron-1.3.2.jar).
+You can find the latest release [here](https://github.com/Indiv0/indiv0-mvn-repo/raw/master/snapshots/com/github/indiv0/alchemicalcauldron/1.3.2/alchemicalcauldron-1.3.2.jar).
 
-For older and development versions, [see my maven repository](http://github.com/Indiv0/indiv0-mvn-repo/snapshots/com/github/Indiv0/alchemicalcauldron/).
+For older and development versions, [see my maven repository](https://github.com/Indiv0/indiv0-mvn-repo/tree/master/snapshots/com/github/indiv0/alchemicalcauldron/).
 
 Developers :
 --------------------
