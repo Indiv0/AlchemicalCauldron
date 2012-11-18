@@ -12,7 +12,7 @@ import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.Indiv0.BukkitUtils.UtilManager;
+import com.github.indiv0.bukkitutils.UtilManager;
 
 public class AlchemicalCauldron extends JavaPlugin {
     private final int CONFIG_VERSION = 1;

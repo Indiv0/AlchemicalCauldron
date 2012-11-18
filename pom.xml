@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.github.Indiv0</groupId>
+  <groupId>com.github.indiv0</groupId>
   <artifactId>alchemicalcauldron</artifactId>
   <version>1.3.2</version>
   <packaging>jar</packaging>
@@ -40,7 +40,7 @@
     </dependency>
     <!-- BukkitUtils -->
     <dependency>
-      <groupId>com.github.Indiv0</groupId>
+      <groupId>com.github.indiv0</groupId>
       <artifactId>bukkitutils</artifactId>
       <version>1.0.1</version>
     </dependency>
@@ -82,13 +82,13 @@
             <configuration>
               <artifactSet>
                 <includes>
-                  <include>com.github.Indiv0:bukkitutils</include>
+                  <include>com.github.indiv0:bukkitutils</include>
                 </includes>
               </artifactSet>
               <relocations>
                 <relocation>
-                  <pattern>com.github.Indiv0.BukkitUtils</pattern>
-                  <shadedPattern>com.github.Indiv0.AlchemicalCauldron.Util</shadedPattern>
+                  <pattern>com.github.indiv0.bukkitutils</pattern>
+                  <shadedPattern>com.github.indiv0.alchemicalcauldron.util</shadedPattern>
                 </relocation>
               </relocations>
             </configuration>
