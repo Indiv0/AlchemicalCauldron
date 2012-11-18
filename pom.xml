@@ -10,6 +10,17 @@
   <description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
   <url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
 
+  <distributionManagement>
+    <repository>
+      <id>repo</id>
+      <url>https://github.com/Indiv0/indiv0-mvn-repo/raw/master/releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>snapshot-repo</id>
+      <url>https://github.com/Indiv0/indiv0-mvn-repo/raw/master/snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+
   <!-- Repositories -->
   <repositories>
     <!-- Bukkit -->
