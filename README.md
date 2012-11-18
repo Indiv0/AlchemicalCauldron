@@ -1,45 +1,23 @@
-Description
-  AlchemicalCauldron is a plugin for bukkit which is used for converting items
-  thrown into a cauldron into other items (e.g. dirt into iron ore).
+AlchemicalCauldron [![Travis CI](https://secure.travis-ci.org/Indiv0/AlchemicalCauldron.png)](http://travis-ci.org/#!/Indiv0/AlchemicalCauldron)
+=============
 
-Permission
-  NONE
-Commands
-  NONE
+AlchemicalCauldron is a plugin for bukkit which is used for converting 
+items thrown into a cauldron into other items (e.g. dirt into iron ore).
 
-Usage
-  Simply run the plugin, edit the "config.yml" that is created by the plugin in order to
-  adjust the item input/output ratios in order to suit your needs.
-  Reload the server in order to update the config.
-  Throw items towards a cauldron in order to convert them into other items.
-  
-  Ratios:
-    Items can be input through their name or their item ID.
-    Input item ratios (0.0-1.0) control how often an item is converted (e.g. 0.46 for dirt will
-    convert it 46% of the time).
-    Output item ratios use a slightly more complicated system, but in general the higher the number (0.0-1.0),
-    the greater the chance of that item being created.
+Download:
+--------------------
 
-Source
-  https://github.com/Indiv0/AlchemicalCauldron
-Download
-  https://github.com/downloads/Indiv0/AlchemicalCauldron/AlchemicalCauldron.jar
+You can find the latest release [here](https://github.com/Indiv0/indiv0-mvn-repo/raw/master/snapshots/com/github/Indiv0/alchemicalcauldron/1.3.2/alchemicalcauldron-1.3.2.jar).
 
-Changelog
-  1.0
-    Added base functionality
-    Added ratio support
-    Added configuration file support/ratio storage
+For older and development versions, [see my maven repository](http://github.com/Indiv0/indiv0-mvn-repo/snapshots/com/github/Indiv0/alchemicalcauldron/).
 
-Verified compatibility
-  1.0
-    CB 1.3.2 RB-1.0
+Developers :
+--------------------
 
-Bugs
-  None known.
+### Installation :
 
-ToDo
-  Make process more seamless (i.e. allow items to fall for a short period of time before conversion)
-  Add variable distance from cauldron control (currently hard-coded to 1 block away)
-  Add more specific item/cauldron collision checking (AFAIK not possible with current events,
-    unless using a complicated and resource intensive HashMap/Coordinate system)
+Simply drop the latest .jar into the /plugins directory of your server.
+
+### Documentation & Usage
+
+Further information can be found on the AlchemicalCauldron BukkitDev page [here] (http://dev.bukkit.org/server-mods/alchemicalcauldron/).
