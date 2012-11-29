@@ -150,13 +150,17 @@ public class AlchemicalCauldron extends JavaPlugin {
         DecimalFormat form = new DecimalFormat();
         form.setMaximumFractionDigits(2);
         form.setMinimumFractionDigits(0);
-		String formuniversal = form.format(val);
-		try {
-			val = Double.parseDouble(formuniversal);
-		} catch (NumberFormatException e) {
-			formuniversal = formuniversal.replace(',', '.');
-			try { val = Double.parseDouble(formuniversal); } catch (NumberFormatException ex) { }
-		}
+        String formuniversal = form.format(val);
+        try {
+            val = Double.parseDouble(formuniversal);
+        } catch (NumberFormatException e) {
+            formuniversal = formuniversal.replace(',', '.');
+            try {
+                val = Double.parseDouble(formuniversal);
+            } catch (NumberFormatException ex) {
+                utilManager.getLogUtil().logException(Level.WARNING, "Failed to parse config value for key: " + key);
+            }
+        }
 
         return val;
     }
