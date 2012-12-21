@@ -4,7 +4,7 @@
 
   <groupId>com.github.indiv0</groupId>
   <artifactId>alchemicalcauldron</artifactId>
-  <version>1.4.0</version>
+  <version>1.4.1</version>
   <packaging>jar</packaging>
   <name>AlchemicalCauldron</name>
   <description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
