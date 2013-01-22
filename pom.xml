@@ -4,93 +4,81 @@
 
   <groupId>com.github.indiv0</groupId>
   <artifactId>alchemicalcauldron</artifactId>
-  <version>1.4.1</version>
+  <version>1.4.2</version>
   <packaging>jar</packaging>
   <name>AlchemicalCauldron</name>
   <description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
   <url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
+
+  <properties>
+    <altDeploymentRepository>-DaltDeploymentRepository=repo::default::file:../indiv0-mvn-repo/releases</altDeploymentRepository>
+    <bukkitutils.version>1.0.3</bukkitutils.version>
+  </properties>
+
+  <parent>
+    <groupId>ashulman</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>0.3.3</version>
+  </parent>
 
   <distributionManagement>
     <repository>
       <id>repo</id>
       <url>https://github.com/Indiv0/indiv0-mvn-repo/raw/master/releases/</url>
     </repository>
-    <snapshotRepository>
-      <id>snapshot-repo</id>
-      <url>https://github.com/Indiv0/indiv0-mvn-repo/raw/master/snapshots/</url>
-    </snapshotRepository>
   </distributionManagement>
 
-  <!-- Repositories -->
-  <repositories>
-    <!-- Indiv0 -->
-    <repository>
-      <id>indiv0-mvn-repo</id>
-      <url>https://github.com/Indiv0/indiv0-mvn-repo/raw/master/snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>always</updatePolicy>
-       </snapshots>
-    </repository>
-  </repositories>
-
-  <!--  Dependencies -->
   <dependencies>
+    <!-- Bukkit -->
+    <dependency>
+      <groupId>org.bukkit</groupId>
+      <artifactId>bukkit</artifactId>
+    </dependency>
     <!-- BukkitUtils -->
     <dependency>
       <groupId>com.github.indiv0</groupId>
-      <artifactId>bukkitutils</artifactId>
-      <version>1.0.2</version>
+      <artifactId>BukkitUtils</artifactId>
+      <version>${bukkitutils.version}</version>
     </dependency>
   </dependencies>
 
   <build>
-    <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-		<resources>
-			<resource>
-				<filtering>true</filtering>
-				<directory>${project.basedir}/src/main/resources</directory>
-			</resource>
-		</resources>
-
-    <!-- Plugins -->
     <plugins>
-      <!-- Compiler -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-      <!-- Shading -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <!-- We want to bundle in BukkitUtil -->
-        <version>1.6</version>
         <executions>
           <execution>
             <phase>package</phase>
             <goals>
               <goal>shade</goal>
             </goals>
-            <configuration>
-              <artifactSet>
-                <includes>
-                  <include>com.github.indiv0:bukkitutils</include>
-                </includes>
-              </artifactSet>
-              <relocations>
-                <relocation>
-                  <pattern>com.github.indiv0.bukkitutils</pattern>
-                  <shadedPattern>com.github.indiv0.alchemicalcauldron.util</shadedPattern>
-                </relocation>
-              </relocations>
-            </configuration>
           </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-to-local-server</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${project.version}</version>
+                  <type>${project.packaging}</type>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>F:/Server/plugins</outputDirectory>
+              <stripVersion>true</stripVersion>                    
+            </configuration>
+          </execution>                        
         </executions>
       </plugin>
     </plugins>
