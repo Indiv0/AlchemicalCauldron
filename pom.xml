@@ -3,8 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.indiv0</groupId>
-  <artifactId>alchemicalcauldron</artifactId>
-  <version>1.4.2</version>
+  <artifactId>alchemical-cauldron</artifactId>
+  <version>1.4.3</version>
   <packaging>jar</packaging>
   <name>AlchemicalCauldron</name>
   <description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
@@ -12,13 +12,13 @@
 
   <properties>
     <altDeploymentRepository>-DaltDeploymentRepository=repo::default::file:../indiv0-mvn-repo/releases</altDeploymentRepository>
-    <bukkitutils.version>1.0.3</bukkitutils.version>
+    <bukkitutils.version>1.0.4</bukkitutils.version>
   </properties>
 
   <parent>
     <groupId>ashulman</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>0.3.3</version>
+    <version>0.4.2</version>
   </parent>
 
   <distributionManagement>
@@ -37,7 +37,7 @@
     <!-- BukkitUtils -->
     <dependency>
       <groupId>com.github.indiv0</groupId>
-      <artifactId>BukkitUtils</artifactId>
+      <artifactId>bukkit-utils</artifactId>
       <version>${bukkitutils.version}</version>
     </dependency>
   </dependencies>
@@ -75,10 +75,10 @@
                   <type>${project.packaging}</type>
                 </artifactItem>
               </artifactItems>
-              <outputDirectory>F:/Server/plugins</outputDirectory>
-              <stripVersion>true</stripVersion>                    
+              <outputDirectory>/storage/server/plugins</outputDirectory>
+              <stripVersion>true</stripVersion>
             </configuration>
-          </execution>                        
+          </execution>
         </executions>
       </plugin>
     </plugins>
