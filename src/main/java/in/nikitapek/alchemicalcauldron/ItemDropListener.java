@@ -2,7 +2,7 @@
  *
  * @author Indivisible0
  */
-package com.github.indiv0.alchemicalcauldron;
+package in.nikitapek.alchemicalcauldron;
 
 import java.util.Map;
 import java.util.Map.Entry;

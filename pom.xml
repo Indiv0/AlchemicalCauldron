@@ -11,22 +11,14 @@
   <url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
 
   <properties>
-    <altDeploymentRepository>-DaltDeploymentRepository=repo::default::file:../indiv0-mvn-repo/releases</altDeploymentRepository>
-    <bukkitutils.version>1.0.4</bukkitutils.version>
+    <bukkitutils.version>1.1.0</bukkitutils.version>
   </properties>
 
   <parent>
-    <groupId>ashulman</groupId>
-    <artifactId>maven-parent</artifactId>
-    <version>0.4.2</version>
+    <groupId>com.amshulman</groupId>
+    <artifactId>bukkit-parent</artifactId>
+    <version>0.6</version>
   </parent>
-
-  <distributionManagement>
-    <repository>
-      <id>repo</id>
-      <url>https://github.com/Indiv0/indiv0-mvn-repo/raw/master/releases/</url>
-    </repository>
-  </distributionManagement>
 
   <dependencies>
     <!-- Bukkit -->
@@ -36,7 +28,7 @@
     </dependency>
     <!-- BukkitUtils -->
     <dependency>
-      <groupId>com.github.indiv0</groupId>
+      <groupId>in.nikitapek</groupId>
       <artifactId>bukkit-utils</artifactId>
       <version>${bukkitutils.version}</version>
     </dependency>
