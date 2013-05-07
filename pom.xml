@@ -1,78 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.github.indiv0</groupId>
-  <artifactId>alchemical-cauldron</artifactId>
-  <version>1.4.3</version>
-  <packaging>jar</packaging>
-  <name>AlchemicalCauldron</name>
-  <description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
-  <url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
+	<groupId>in.nikitapek</groupId>
+	<artifactId>alchemical-cauldron</artifactId>
+	<name>AlchemicalCauldron</name>
+	<version>${mbapi.version}.0</version>
+	<description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
+	<url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
 
-  <properties>
-    <bukkitutils.version>1.1.0</bukkitutils.version>
-  </properties>
+	<parent>
+		<groupId>com.amshulman</groupId>
+		<artifactId>bukkit-parent</artifactId>
+		<version>0.8</version>
+	</parent>
 
-  <parent>
-    <groupId>com.amshulman</groupId>
-    <artifactId>bukkit-parent</artifactId>
-    <version>0.6</version>
-  </parent>
+	<dependencies>
+		<!-- Bukkit -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+		</dependency>
+		<!-- Mbapi -->
+		<dependency>
+			<groupId>com.amshulman</groupId>
+			<artifactId>mbapi</artifactId>
+		</dependency>
+	</dependencies>
 
-  <dependencies>
-    <!-- Bukkit -->
-    <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
-    </dependency>
-    <!-- BukkitUtils -->
-    <dependency>
-      <groupId>in.nikitapek</groupId>
-      <artifactId>bukkit-utils</artifactId>
-      <version>${bukkitutils.version}</version>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-to-local-server</id>
-            <phase>deploy</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${project.version}</version>
-                  <type>${project.packaging}</type>
-                </artifactItem>
-              </artifactItems>
-              <outputDirectory>/storage/server/plugins</outputDirectory>
-              <stripVersion>true</stripVersion>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>plugin.yml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<excludes>
+					<exclude>plugin.yml</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-to-local-server</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>${project.groupId}</groupId>
+									<artifactId>${project.artifactId}</artifactId>
+									<version>${project.version}</version>
+									<type>${project.packaging}</type>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>/storage/server/plugins</outputDirectory>
+							<stripVersion>false</stripVersion>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

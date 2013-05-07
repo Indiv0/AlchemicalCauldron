@@ -22,9 +22,3 @@ outputs:
     iron_ingot: '0.7'
     gold_ingot: '0.3'
     diamond: '0.05'
-
-###############################################
-##   Internal Settings (Read: DO NOT EDIT)   ##
-###############################################
-
-version: 1

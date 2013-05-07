@@ -1,13 +1,11 @@
-/**
- *
- * @author Indivisible0
- */
-package in.nikitapek.alchemicalcauldron;
+package in.nikitapek.alchemicalcauldron.events;
 
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import in.nikitapek.alchemicalcauldron.util.AlchemicalCauldronConfigurationContext;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,14 +16,13 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class ItemDropListener implements Listener {
-    public static AlchemicalCauldron plugin;
+public class AlchemicalCauldronListener implements Listener {
+    private AlchemicalCauldronConfigurationContext configurationContext;
 
-    public ItemDropListener(AlchemicalCauldron instance) {
-        plugin = instance;
+    public AlchemicalCauldronListener(final AlchemicalCauldronConfigurationContext configurationContext) {
+        this.configurationContext = configurationContext;
     }
 
-    // Create a method to handle/interact with item throwing events.
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
         // Gets the block targetted by the player.
@@ -35,48 +32,43 @@ public class ItemDropListener implements Listener {
         try {
             if (targetBlock.getType() != Material.CAULDRON)
                 return;
-        } catch (NullPointerException ex) {
+        }
+        catch (NullPointerException ex) {
             return;
         }
 
-        // If the player does not have permissions to use AlchemicalCauldron,
-        // cancels the event.
+        // If the player does not have permissions to use AlchemicalCauldron, cancels the event.
         if (!event.getPlayer().hasPermission("alchemicalcauldron.use"))
             return;
 
         // Gets the thrown item and converts it into a usable ItemStack.
-        Item thrownItem = event.getItemDrop();
-        ItemStack thrownItemStack = thrownItem.getItemStack();
-        Material thrownItemStackMaterial = thrownItemStack.getType();
+        ItemStack thrownItemStack = event.getItemDrop().getItemStack();
 
         // Checks to make sure the ItemStack contains a valid input material.
-        if (!plugin.getInputMaterials().containsKey(thrownItemStackMaterial))
+        if (!configurationContext.inputMaterials.containsKey(thrownItemStack.getType()))
             return;
 
         // Gets the probability for that input item.
-        double inputProbability = plugin.getInputMaterials().get(thrownItemStackMaterial);
+        double inputProbability = configurationContext.inputMaterials.get(thrownItemStack.getType());
 
         for (int i = 1; i <= thrownItemStack.getAmount(); i++) {
             // If the conversion fails, delete the ItemStack.
             if (Math.random() > inputProbability) {
                 // Sets a timer to despawn the "used up" item.
-                setItemDespawnTimer(thrownItem, 3);
+                setItemDespawnTimer(event.getItemDrop(), 3);
                 continue;
             }
 
-            // If the conversion was successful, makes a new ItemStack with a
-            // randomized (based on ratio) output item.
-            ItemStack newItemStack = new ItemStack(getObjectByProbability(plugin.getMaterialMatches(thrownItemStackMaterial).entrySet()), 1);
+            // If the conversion was successful, makes a new ItemStack with a randomized (based on ratio) output item.
+            ItemStack newItemStack = new ItemStack(getObjectByProbability(configurationContext.materialMatches.get(thrownItemStack.getType()).entrySet()), 1);
 
-            // Possibly unessessary double-check to make sure the material is
-            // not AIR?
+            // Possibly unessessary double-check to make sure the material is not AIR?
             if (newItemStack.getType() == Material.AIR)
                 continue;
 
-            // Creates the timer which, when completed, will delete the "input"
-            // block and create the "output" block.
-            setItemCreationTimer(thrownItem,
-                    new Location(thrownItem.getWorld(), targetBlock.getX() + 0.5, targetBlock.getY() + 1, targetBlock.getZ() + 0.5),
+            // Creates the timer which, when completed, will delete the "input" block and create the "output" block.
+            setItemCreationTimer(event.getItemDrop(),
+                    new Location(event.getItemDrop().getWorld(), targetBlock.getX() + 0.5, targetBlock.getY() + 1, targetBlock.getZ() + 0.5),
                     newItemStack, 3);
         }
     }
@@ -86,13 +78,11 @@ public class ItemDropListener implements Listener {
         // Sets a timer to despawn the "used up" item.
         setItemDespawnTimer(previousItem, seconds);
 
-        // Creates an Async task, which when run, creates the new item..
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
+        // Creates an sync task, which when run, creates the new item.
+        Bukkit.getScheduler().scheduleSyncDelayedTask(configurationContext.plugin, new Runnable() {
             @Override
             public void run() {
-                // Sets the Item and sets its location to the centre of the
-                // CAULDRON.
+                // Sets the Item and sets its location to the centre of the CAULDRON.
                 Item item = previousItem.getWorld().dropItem(loc, itemStack);
                 item.setPickupDelay(seconds);
 
@@ -108,20 +98,17 @@ public class ItemDropListener implements Listener {
 
     private void setItemDespawnTimer(final Item item, int seconds)
     {
-        // Set the item pickup delay to a the requested value + 5s (for safety)
-        // so
-        // that it can not be picked up in the meantime.
+        // Set the item pickup delay to a the requested value + 5s (for safety) so that it can not be picked up in the meantime.
         item.setPickupDelay((seconds + 5) * 20);
 
-        // Creates an Async task, which when run, deletes the item.
-        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
+        // Creates an sync task, which when run, deletes the item.
+        Bukkit.getScheduler().scheduleSyncDelayedTask(configurationContext.plugin, new Runnable() {
             @Override
             public void run() {
                 try {
                     item.remove();
-                } catch (Exception ex) {
                 }
+                catch (Exception ex) {}
             }
         }, seconds * 20);
     }
@@ -132,7 +119,7 @@ public class ItemDropListener implements Listener {
         while (true) {
             double probability = Math.random();
 
-            for (Map.Entry<K, Double> entry : set)
+            for (Entry<K, Double> entry : set)
             {
                 if (probability < entry.getValue())
                     return entry.getKey();
