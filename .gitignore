@@ -3,6 +3,7 @@
 .project
 .settings/
 target/
+.checkstyle
 
 # Maven
 dependency-reduced-pom.xml

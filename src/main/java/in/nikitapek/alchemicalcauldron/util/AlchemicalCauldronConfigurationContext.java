@@ -12,10 +12,10 @@ import com.amshulman.mbapi.MbapiPlugin;
 import com.amshulman.mbapi.util.ConfigurationContext;
 
 public class AlchemicalCauldronConfigurationContext extends ConfigurationContext {
-    public final HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
-    public final HashMap<Material, HashMap<Material, Double>> materialMatches = new HashMap<Material, HashMap<Material, Double>>();
+    private final HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
+    private final HashMap<Material, HashMap<Material, Double>> materialMatches = new HashMap<Material, HashMap<Material, Double>>();
 
-    public AlchemicalCauldronConfigurationContext(MbapiPlugin plugin) {
+    public AlchemicalCauldronConfigurationContext(final MbapiPlugin plugin) {
         super(plugin);
 
         plugin.saveDefaultConfig();
@@ -24,19 +24,20 @@ public class AlchemicalCauldronConfigurationContext extends ConfigurationContext
         loadOutputMaterials("outputs");
     }
 
-    private void loadInputMaterials(String section) {
-        Set<String> keyList = plugin.getConfig().getConfigurationSection(section).getKeys(false);
+    private void loadInputMaterials(final String section) {
+        final Set<String> keyList = plugin.getConfig().getConfigurationSection(section).getKeys(false);
 
-        for (String materialID : keyList) {
+        for (final String materialID : keyList) {
             // Attempts to get the material represented by the key.
-            Material material = Material.matchMaterial(materialID);
+            final Material material = Material.matchMaterial(materialID);
 
             // Checks to make sure the material is legitimate, has not been entered twice, and is accepted by the plugin prior to proceeding.
-            if (!isAllowedMaterial(inputMaterials, material))
+            if (!isAllowedMaterial(getInputMaterials(), material)) {
                 continue;
+            }
 
             // Gets the probability value of the provided material.
-            double val = getAndParseConfigDouble(section, materialID);
+            final double val = getAndParseConfigDouble(section, materialID);
 
             // Makes sure that the probability value falls within the expected range.
             if (val < 0 || val > 1) {
@@ -45,37 +46,39 @@ public class AlchemicalCauldronConfigurationContext extends ConfigurationContext
             }
 
             // Adds the material/probability key/value set to the material cache.
-            inputMaterials.put(material, val);
+            getInputMaterials().put(material, val);
         }
     }
 
-    private void loadOutputMaterials(String section) {
-        Set<String> keyList = plugin.getConfig().getConfigurationSection(section).getKeys(false);
+    private void loadOutputMaterials(final String section) {
+        final Set<String> keyList = plugin.getConfig().getConfigurationSection(section).getKeys(false);
 
-        for (String materialID : keyList) {
+        for (final String materialID : keyList) {
             // Attempts to get the material represented by the key.
-            Material material = Material.matchMaterial(materialID);
+            final Material material = Material.matchMaterial(materialID);
 
             // Checks to make sure the material is legitimate, has not been entered twice, and is accepted by the plugin prior to proceeding.
-            if (!isAllowedMaterial(materialMatches, material))
+            if (!isAllowedMaterial(getMaterialMatches(), material)) {
                 continue;
+            }
 
             // Adds the input material and its corresponding HashMap of possible outputs to the cache.
-            materialMatches.put(material, new HashMap<Material, Double>());
+            getMaterialMatches().put(material, new HashMap<Material, Double>());
 
             // Gets the secondary material list.
-            Set<String> outputList = plugin.getConfig().getConfigurationSection(section + "." + materialID).getKeys(false);
+            final Set<String> outputList = plugin.getConfig().getConfigurationSection(section + "." + materialID).getKeys(false);
 
-            for (String outputID : outputList) {
+            for (final String outputID : outputList) {
                 // Attempts to get the material represented by the key.
-                Material outputMaterial = Material.matchMaterial(outputID);
+                final Material outputMaterial = Material.matchMaterial(outputID);
 
                 // Checks to make sure the material is legitimate, has not been entered twice, and is accepted by the plugin prior to proceeding.
-                if (!isAllowedMaterial(materialMatches.get(material), outputMaterial))
+                if (!isAllowedMaterial(getMaterialMatches().get(material), outputMaterial)) {
                     continue;
+                }
 
                 // Gets the probability value of the provided material.
-                double val = getAndParseConfigDouble(section + "." + materialID, outputID);
+                final double val = getAndParseConfigDouble(section + "." + materialID, outputID);
 
                 // Makes sure that the probability value falls within the expected range.
                 if (val < 0 || val > 1) {
@@ -84,36 +87,33 @@ public class AlchemicalCauldronConfigurationContext extends ConfigurationContext
                 }
 
                 // Adds the material/probability key/value set to the material cache.
-                materialMatches.get(material).put(outputMaterial, val);
+                getMaterialMatches().get(material).put(outputMaterial, val);
             }
         }
     }
 
-    public double getAndParseConfigDouble(String section, String key) {
+    public final double getAndParseConfigDouble(final String section, final String key) {
         // Tries to lead the ratio value for that key.
         double val = -1;
         try {
-            String valString = plugin.getConfig().getString(section + "." + key);
+            final String valString = plugin.getConfig().getString(section + "." + key);
             val = Double.parseDouble(valString);
-        }
-        catch (Exception ex) {
+        } catch (final NumberFormatException ex) {
             Bukkit.getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + key);
         }
 
         // Reduce the precision to 2 decimal places.
-        DecimalFormat form = new DecimalFormat();
+        final DecimalFormat form = new DecimalFormat();
         form.setMaximumFractionDigits(2);
         form.setMinimumFractionDigits(0);
         String formuniversal = form.format(val);
         try {
             val = Double.parseDouble(formuniversal);
-        }
-        catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             formuniversal = formuniversal.replace(',', '.');
             try {
                 val = Double.parseDouble(formuniversal);
-            }
-            catch (NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
                 Bukkit.getLogger().log(Level.WARNING, "Failed to parse config value for key: " + key);
             }
         }
@@ -121,7 +121,7 @@ public class AlchemicalCauldronConfigurationContext extends ConfigurationContext
         return val;
     }
 
-    private <K> boolean isAllowedMaterial(HashMap<Material, K> materialList, Material material) {
+    private <K> boolean isAllowedMaterial(final HashMap<Material, K> materialList, final Material material) {
         // If the key is invalid, output as such.
         if (material == null || material == Material.AIR) {
             Bukkit.getLogger().log(Level.WARNING, "Config contains an invalid key.");
@@ -136,5 +136,19 @@ public class AlchemicalCauldronConfigurationContext extends ConfigurationContext
         }
 
         return true;
+    }
+
+    /**
+     * @return the inputMaterials
+     */
+    public final HashMap<Material, Double> getInputMaterials() {
+        return inputMaterials;
+    }
+
+    /**
+     * @return the materialMatches
+     */
+    public final HashMap<Material, HashMap<Material, Double>> getMaterialMatches() {
+        return materialMatches;
     }
 }
