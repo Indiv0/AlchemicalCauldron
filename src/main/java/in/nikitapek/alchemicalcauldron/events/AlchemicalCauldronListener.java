@@ -16,7 +16,7 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class AlchemicalCauldronListener implements Listener {
+public final class AlchemicalCauldronListener implements Listener {
     private static final float CAULDRON_HORIZONTAL_OFFSET = 0.5f;
     private static final byte CAULDRON_VERTICAL_OFFSET = 1;
     private static final byte ITEMSTACK_DESPAWN_TIME = 3;
@@ -33,8 +33,8 @@ public class AlchemicalCauldronListener implements Listener {
     }
 
     @EventHandler
-    public final void onItemDrop(final PlayerDropItemEvent event) {
-        // Gets the block targetted by the player.
+    public void onItemDrop(final PlayerDropItemEvent event) {
+        // Gets the block targeted by the player.
         final Block targetBlock = event.getPlayer().getTargetBlock(null, 1);
 
         // Checks to make sure the block is a CAULDRON.
@@ -73,7 +73,7 @@ public class AlchemicalCauldronListener implements Listener {
             // If the conversion was successful, makes a new ItemStack with a randomized (based on ratio) output item.
             final ItemStack newItemStack = new ItemStack(getObjectByProbability(configurationContext.getMaterialMatches().get(thrownItemStack.getType()).entrySet()), 1);
 
-            // Possibly unessessary double-check to make sure the material is not AIR?
+            // Possibly unnecessary double-check to make sure the material is not AIR?
             if (newItemStack.getType() == Material.AIR) {
                 continue;
             }

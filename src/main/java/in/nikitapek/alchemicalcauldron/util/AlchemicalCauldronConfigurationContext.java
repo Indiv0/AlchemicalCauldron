@@ -11,7 +11,7 @@ import org.bukkit.Material;
 import com.amshulman.mbapi.MbapiPlugin;
 import com.amshulman.mbapi.util.ConfigurationContext;
 
-public class AlchemicalCauldronConfigurationContext extends ConfigurationContext {
+public final class AlchemicalCauldronConfigurationContext extends ConfigurationContext {
     private final HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
     private final HashMap<Material, HashMap<Material, Double>> materialMatches = new HashMap<Material, HashMap<Material, Double>>();
 
@@ -92,7 +92,7 @@ public class AlchemicalCauldronConfigurationContext extends ConfigurationContext
         }
     }
 
-    public final double getAndParseConfigDouble(final String section, final String key) {
+    public double getAndParseConfigDouble(final String section, final String key) {
         // Tries to lead the ratio value for that key.
         double val = -1;
         try {
@@ -141,14 +141,14 @@ public class AlchemicalCauldronConfigurationContext extends ConfigurationContext
     /**
      * @return the inputMaterials
      */
-    public final HashMap<Material, Double> getInputMaterials() {
+    public HashMap<Material, Double> getInputMaterials() {
         return inputMaterials;
     }
 
     /**
      * @return the materialMatches
      */
-    public final HashMap<Material, HashMap<Material, Double>> getMaterialMatches() {
+    public HashMap<Material, HashMap<Material, Double>> getMaterialMatches() {
         return materialMatches;
     }
 }
