@@ -1,10 +1,6 @@
 package in.nikitapek.alchemicalcauldron.events;
 
 import in.nikitapek.alchemicalcauldron.util.AlchemicalCauldronConfigurationContext;
-
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,6 +11,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.Map.Entry;
+import java.util.Set;
 
 public final class AlchemicalCauldronListener implements Listener {
     private static final float CAULDRON_HORIZONTAL_OFFSET = 0.5f;
@@ -81,13 +80,13 @@ public final class AlchemicalCauldronListener implements Listener {
             // Creates the timer which, when completed, will delete the "input" block and create the "output" block.
             setItemCreationTimer(event.getItemDrop(),
                     new Location(event.getItemDrop().getWorld(), targetBlock.getX() + CAULDRON_HORIZONTAL_OFFSET, targetBlock.getY() + CAULDRON_VERTICAL_OFFSET, targetBlock.getZ() + CAULDRON_HORIZONTAL_OFFSET),
-                    newItemStack, ITEMSTACK_DESPAWN_TIME);
+                    newItemStack);
         }
     }
 
-    private void setItemCreationTimer(final Item previousItem, final Location loc, final ItemStack itemStack, final int seconds) {
+    private void setItemCreationTimer(final Item previousItem, final Location loc, final ItemStack itemStack) {
         // Sets a timer to despawn the "used up" item.
-        setItemDespawnTimer(previousItem, seconds);
+        setItemDespawnTimer(previousItem, ITEMSTACK_DESPAWN_TIME);
 
         // Creates an sync task, which when run, creates the new item.
         Bukkit.getScheduler().scheduleSyncDelayedTask(configurationContext.plugin, new Runnable() {
@@ -95,7 +94,7 @@ public final class AlchemicalCauldronListener implements Listener {
             public void run() {
                 // Sets the Item and sets its location to the centre of the CAULDRON.
                 final Item item = previousItem.getWorld().dropItem(loc, itemStack);
-                item.setPickupDelay(seconds);
+                item.setPickupDelay(ITEMSTACK_DESPAWN_TIME);
 
                 // Gives the item a slightly randomized vertical velocity.
                 final Vector zero = new Vector();
@@ -104,7 +103,7 @@ public final class AlchemicalCauldronListener implements Listener {
                 zero.setZ(Vector.getRandom().getZ() * ITEM_HORIZONTAL_VELOCITY_FRACTION);
                 item.setVelocity(zero);
             }
-        }, seconds * TICKS_PER_SECOND);
+        }, ITEMSTACK_DESPAWN_TIME * TICKS_PER_SECOND);
     }
 
     private void setItemDespawnTimer(final Item item, final int seconds) {
