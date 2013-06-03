@@ -1,15 +1,14 @@
 package in.nikitapek.alchemicalcauldron.util;
 
+import com.amshulman.mbapi.MbapiPlugin;
+import com.amshulman.mbapi.util.ConfigurationContext;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-
-import com.amshulman.mbapi.MbapiPlugin;
-import com.amshulman.mbapi.util.ConfigurationContext;
 
 public final class AlchemicalCauldronConfigurationContext extends ConfigurationContext {
     private final HashMap<Material, Double> inputMaterials = new HashMap<Material, Double>();
