@@ -7,10 +7,6 @@ description: A plugin for using the AlchemicalCauldron to convert items.
 dev-url: http://github.com/Indiv0/AlchemicalCauldron/
 
 permissions:
-  alchemicalcauldron.*:
-    description: Controls all AlchemicalCauldron permissions
-    children:
-      alchemicalcauldron.use: true
   alchemicalcauldron.use:
     description: Controls whether or not the user can use AlchemicalCauldron
     default: false
