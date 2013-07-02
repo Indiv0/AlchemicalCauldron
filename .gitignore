@@ -5,6 +5,9 @@
 target/
 .checkstyle
 
+# IntelliJ
+*.iml
+
 # Maven
 dependency-reduced-pom.xml
-/bin
+bin/
