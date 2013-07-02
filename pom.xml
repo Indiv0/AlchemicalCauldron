@@ -6,7 +6,7 @@
 	<groupId>in.nikitapek</groupId>
 	<artifactId>alchemical-cauldron</artifactId>
 	<name>AlchemicalCauldron</name>
-	<version>${mbapi.version}.0</version>
+	<version>${mbapi.version}.1</version>
 	<description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
 	<url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
 
