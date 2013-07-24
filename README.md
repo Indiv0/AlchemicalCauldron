@@ -1,4 +1,4 @@
-AlchemicalCauldron [![Travis CI](https://secure.travis-ci.org/Indiv0/AlchemicalCauldron.png)](http://travis-ci.org/#!/Indiv0/AlchemicalCauldron)
+AlchemicalCauldron [![Travis CI](https://secure.travis-ci.org/Indiv0/alchemical-cauldron.png)](http://travis-ci.org/#!/Indiv0/alchemical-cauldron)
 ===
 
 AlchemicalCauldron is a plugin for bukkit which is used for converting
