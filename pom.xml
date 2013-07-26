@@ -16,6 +16,14 @@
 		<version>0.12</version>
 	</parent>
 
+	<repositories>
+		<repository>
+			<id>minerap-repo</id>
+			<name>MinerAp</name>
+			<url>https://www.minerap.com/repository/</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<!-- Spigot -->
 		<dependency>
