@@ -6,7 +6,7 @@
 	<groupId>in.nikitapek</groupId>
 	<artifactId>alchemical-cauldron</artifactId>
 	<name>AlchemicalCauldron</name>
-	<version>${mbapi.version}.0</version>
+	<version>${mbapi.version}.0-SNAPSHOT</version>
 	<description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
 	<url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
 
@@ -15,6 +15,25 @@
 		<artifactId>bukkit-parent</artifactId>
 		<version>0.12</version>
 	</parent>
+
+	<scm>
+		<connection>scm:git:git@github.com:Indiv0/alchemical-cauldron.git</connection>
+		<developerConnection>scm:git:git@github.com:Indiv0/alchemical-cauldron.git</developerConnection>
+		<url>http://github.com/Indiv0/alchemical-cauldron</url>
+	</scm>
+
+	<distributionManagement>
+		<repository>
+			<id>archiva.internal</id>
+			<name>Internal Release Repository</name>
+			<url>http://maven.nikitapek.in/repository/internal/</url>
+		</repository>
+		<snapshotRepository>
+			<id>archiva.snapshots</id>
+			<name>Internal Snapshot Repository</name>
+			<url>http://maven.nikitapek.in/repository/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<repositories>
 		<repository>
