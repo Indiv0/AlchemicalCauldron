@@ -12,11 +12,18 @@ import java.util.Set;
 import java.util.logging.Level;
 
 public final class AlchemicalCauldronConfigurationContext extends ConfigurationContext {
+    // Reduce the precision to 2 decimal places.
+    private static final DecimalFormat decimalFormat = new DecimalFormat();
+
     public final Map<Material, Double> inputMaterials = new HashMap<Material, Double>();
     public final Map<Material, HashMap<Material, Double>> materialMatches = new HashMap<Material, HashMap<Material, Double>>();
 
     public AlchemicalCauldronConfigurationContext(final MbapiPlugin plugin) {
         super(plugin);
+
+        // Initialize the decimal formatter.
+        decimalFormat.setMaximumFractionDigits(2);
+        decimalFormat.setMinimumFractionDigits(0);
 
         plugin.saveDefaultConfig();
 
@@ -102,20 +109,12 @@ public final class AlchemicalCauldronConfigurationContext extends ConfigurationC
             Bukkit.getLogger().log(Level.WARNING, "Config contains an invalid value for key: " + key);
         }
 
-        // Reduce the precision to 2 decimal places.
-        final DecimalFormat form = new DecimalFormat();
-        form.setMaximumFractionDigits(2);
-        form.setMinimumFractionDigits(0);
-        String formuniversal = form.format(val);
+        String formuniversal = decimalFormat.format(val);
         try {
-            val = Double.parseDouble(formuniversal);
-        } catch (final NumberFormatException e) {
             formuniversal = formuniversal.replace(',', '.');
-            try {
-                val = Double.parseDouble(formuniversal);
-            } catch (final NumberFormatException ex) {
-                Bukkit.getLogger().log(Level.WARNING, "Failed to parse config value for key: " + key);
-            }
+            val = Double.parseDouble(formuniversal);
+        } catch (final NumberFormatException ex) {
+            Bukkit.getLogger().log(Level.WARNING, "Failed to parse config value for key: " + key);
         }
 
         return val;

@@ -7,6 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -19,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
 
 public final class AlchemicalCauldronListener implements Listener {
     private static final float CAULDRON_HORIZONTAL_OFFSET = 0.5f;
@@ -51,18 +52,7 @@ public final class AlchemicalCauldronListener implements Listener {
     public void onItemDrop(final PlayerDropItemEvent event) {
         // Get the Item being thrown, as well as the relevant ItemStack.
         final Item item = event.getItemDrop();
-        final ItemStack itemStack = item.getItemStack();
-        final Material material = itemStack.getType();
-
-        // If the player does not have permissions to use AlchemicalCauldron, cancels the event.
-        if (!event.getPlayer().hasPermission("alchemicalcauldron.use")) {
-            return;
-        }
-
-        // Checks to make sure the ItemStack contains a valid input material.
-        if (!inputMaterials.containsKey(material)) {
-            return;
-        }
+        final Player player = event.getPlayer();
 
         new BukkitRunnable() {
             // Because the Y value and location only get updated at the end of the run() method, setting firstY to location.getY() right away would result in the task only getting called once.
@@ -78,77 +68,92 @@ public final class AlchemicalCauldronListener implements Listener {
                 }
 
                 final Location location = item.getLocation();
+                final Event itemEvent;
 
-                // If the block has just bounced, then we check the block type to see if it is a cauldron.
-                // If it is a cauldron, then the AlchemicalCauldron logic is run and the no longer required task is cancelled.
-                if (previousLocation.getY() < location.getY() && firstY > previousLocation.getY() && Material.CAULDRON.equals(previousLocation.getBlock().getType())) {
-                    // Gets the probability for that input item.
-                    final double inputProbability = inputMaterials.get(material);
-
-                    for (int i = 1; i <= itemStack.getAmount(); i++) {
-                        // If the conversion fails, delete the ItemStack.
-                        if (Math.random() > inputProbability) {
-                            // Sets a timer to despawn the "used up" item.
-                            setItemDespawnTimer(event.getItemDrop());
-                            continue;
-                        }
-
-                        // If the conversion was successful, makes a new ItemStack with a randomized (based on ratio) output item.
-                        final ItemStack newItemStack = new ItemStack(getObjectByProbability(materialMatches.get(material).entrySet()), 1);
-
-                        // Possibly unnecessary double-check to make sure the material is not AIR?
-                        if (newItemStack.getType() == Material.AIR) {
-                            continue;
-                        }
-
-                        // Creates the timer which, when completed, will delete the "input" block and create the "output" block.
-                        setItemCreationTimer(event.getItemDrop(),
-                                new Location(event.getItemDrop().getWorld(), previousLocation.getX() + CAULDRON_HORIZONTAL_OFFSET, previousLocation.getY() + CAULDRON_VERTICAL_OFFSET, previousLocation.getZ() + CAULDRON_HORIZONTAL_OFFSET),
-                                newItemStack);
-                    }
-                    this.cancel();
+                // If the block has just bounced, then we call the relevant event.
+                if (previousLocation.getY() < location.getY() && firstY > previousLocation.getY()) {
+                    // If the item has just bounced, then we call the ItemBounceEvent.
+                    itemEvent = new ItemBounceEvent(item, previousLocation, player);
                 } else if (location.getY() == previousLocation.getY()) {
-                    // If the item is no longer falling, then we cancel the task.
-                    this.cancel();
+                    // If the item is no longer falling, then we trigger the ItemLandEvent.
+                    itemEvent = new ItemLandEvent(item, player);
+                } else {
+                    firstY = previousLocation.getY();
+                    previousLocation = location;
+                    return;
                 }
 
-                firstY = previousLocation.getY();
-                previousLocation = location;
+                Bukkit.getServer().getPluginManager().callEvent(itemEvent);
+                this.cancel();
             }
         }.runTaskTimer(plugin, 1L, 1L);
     }
 
-    private void setItemCreationTimer(final Item previousItem, final Location loc, final ItemStack itemStack) {
-        // Sets a timer to despawn the "used up" item.
-        setItemDespawnTimer(previousItem);
+    @EventHandler
+    public void onItemBounce(final ItemBounceEvent event) {
+        alchemizeItemStack(event.getItem(), event.getLocation().getBlock(), event.getPlayer());
+    }
 
+    @EventHandler
+    public void onItemLand(final ItemLandEvent event) {
+        alchemizeItemStack(event.getItem(), event.getBlock(), event.getPlayer());
+    }
+
+    /**
+     *
+     * @param item the Item to be alchemized.
+     * @param block the cauldron Block.
+     * @param player the Player who threw the Item.
+     */
+    private void alchemizeItemStack(final Item item, final Block block, final Player player) {
+        final Location location = block.getLocation();
+        final ItemStack itemStack = item.getItemStack();
+        final Material material = itemStack.getType();
+
+        // If the player does not have permissions to use AlchemicalCauldron, cancels the event.
+        if (player == null || !player.hasPermission("alchemicalcauldron.use")) {
+            return;
+        }
+
+        // Checks to make sure the block is a cauldron.
+        if (!Material.CAULDRON.equals(block.getType())) {
+            return;
+        }
+
+        // Checks to make sure the ItemStack contains a valid input material.
+        if (!inputMaterials.containsKey(material)) {
+            return;
+        }
+
+        // Gets the probability for that input item.
+        final double inputProbability = inputMaterials.get(itemStack.getType());
+
+        for (int i = 1; i <= itemStack.getAmount(); i++) {
+            // If the conversion fails, delete the item.
+            if (Math.random() > inputProbability) {
+                continue;
+            }
+
+            // If the conversion was successful, create a new ItemStack with a randomized (based on ratio) output item.
+            // Also create the timer which, when completed, will delete the "input" block and create the "output" block.
+            setItemCreationTimer(new Location(item.getWorld(), location.getBlockX() + CAULDRON_HORIZONTAL_OFFSET, location.getBlockY() + CAULDRON_VERTICAL_OFFSET, location.getBlockZ() + CAULDRON_HORIZONTAL_OFFSET),
+                    new ItemStack(getObjectByProbability(materialMatches.get(material).entrySet()), 1));
+        }
+
+        item.remove();
+    }
+
+    private void setItemCreationTimer(final Location location, final ItemStack itemStack) {
         // Creates an sync task, which when run, creates the new item.
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             @Override
             public void run() {
                 // Sets the Item and sets its location to the centre of the CAULDRON.
-                final Item item = previousItem.getWorld().dropItem(loc, itemStack);
+                final Item item = location.getWorld().dropItem(location, itemStack);
                 item.setPickupDelay(ITEMSTACK_DESPAWN_TIME);
 
-                // Gives the item a slightly randomized vertical velocity.
-                final Vector zero = new Vector();
-                zero.setY(ITEM_VERTICAL_VELOCITY);
-                zero.setX(Vector.getRandom().getX() * ITEM_HORIZONTAL_VELOCITY_FRACTION);
-                zero.setZ(Vector.getRandom().getZ() * ITEM_HORIZONTAL_VELOCITY_FRACTION);
-                item.setVelocity(zero);
-            }
-        }, ITEMSTACK_DESPAWN_TIME * TICKS_PER_SECOND);
-    }
-
-    private void setItemDespawnTimer(final Item item) {
-        // Set the item pickup delay to a the requested value so that it can not be picked up in the meantime.
-        item.setPickupDelay((ITEMSTACK_DESPAWN_TIME) * TICKS_PER_SECOND);
-
-        // Creates an sync task, which when run, deletes the item.
-        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-            @Override
-            public void run() {
-                item.remove();
+                // Gives the item a slightly randomized horizontal velocity.
+                item.setVelocity(new Vector(Vector.getRandom().getX() * ITEM_HORIZONTAL_VELOCITY_FRACTION, ITEM_VERTICAL_VELOCITY, Vector.getRandom().getZ() * ITEM_HORIZONTAL_VELOCITY_FRACTION));
             }
         }, ITEMSTACK_DESPAWN_TIME * TICKS_PER_SECOND);
     }
