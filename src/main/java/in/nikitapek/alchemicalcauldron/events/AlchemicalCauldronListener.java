@@ -65,6 +65,7 @@ public final class AlchemicalCauldronListener implements Listener {
                 // If the item was deleted or picked up or otherwise removed, there is no need to perform further checks on it.
                 if (item == null) {
                     this.cancel();
+                    return;
                 }
 
                 final Location location = item.getLocation();
