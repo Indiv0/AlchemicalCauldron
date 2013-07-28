@@ -9,4 +9,3 @@ dev-url: http://github.com/Indiv0/AlchemicalCauldron/
 permissions:
   alchemicalcauldron.use:
     description: Controls whether or not the user can use AlchemicalCauldron
-    default: false
