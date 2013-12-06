@@ -1,75 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>in.nikitapek</groupId>
-	<artifactId>alchemical-cauldron</artifactId>
-	<name>AlchemicalCauldron</name>
-	<version>${mbapi.version}.1-SNAPSHOT</version>
-	<description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
-	<url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
+    <groupId>in.nikitapek</groupId>
+    <artifactId>alchemical-cauldron</artifactId>
+    <name>AlchemicalCauldron</name>
+    <version>${mbapi.version}.0</version>
+    <description>A Bukkit plugin which gives the users the ability to transmute items through a cauldron.</description>
+    <url>http://dev.bukkit.org/server-mods/alchemicalcauldron/</url>
 
-	<parent>
-		<groupId>com.amshulman</groupId>
-		<artifactId>bukkit-parent</artifactId>
-		<version>0.12</version>
-	</parent>
+    <parent>
+        <groupId>com.amshulman</groupId>
+        <artifactId>bukkit-parent</artifactId>
+        <version>0.15</version>
+    </parent>
 
-	<distributionManagement>
-		<repository>
-			<id>archiva.internal</id>
-			<name>Internal Release Repository</name>
-			<url>http://maven.nikitapek.in/repository/internal/</url>
-		</repository>
-		<snapshotRepository>
-			<id>archiva.snapshots</id>
-			<name>Internal Snapshot Repository</name>
-			<url>http://maven.nikitapek.in/repository/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
+    <repositories>
+        <repository>
+            <id>minerap-repo</id>
+            <name>MinerAp</name>
+            <url>http://repo.minerap.com/</url>
+        </repository>
+    </repositories>
 
-	<repositories>
-		<repository>
-			<id>minerap-repo</id>
-			<name>MinerAp</name>
-			<url>https://www.minerap.com/repository/</url>
-		</repository>
-	</repositories>
+    <dependencies>
+        <!-- Spigot -->
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+        </dependency>
+        <!-- Mbapi -->
+        <dependency>
+            <groupId>com.amshulman</groupId>
+            <artifactId>mbapi</artifactId>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
-	<dependencies>
-		<!-- Spigot -->
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-		</dependency>
-		<!-- Mbapi -->
-		<dependency>
-			<groupId>com.amshulman</groupId>
-			<artifactId>mbapi</artifactId>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
-
-	<profiles>
-		<profile>
-			<id>production</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-shade-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>shade</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
+    <profiles>
+        <profile>
+            <id>production</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <minimizeJar>true</minimizeJar>
+                                    <filters>
+                                        <filter>
+                                            <artifact>mbapi:mbapi</artifact>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                        </filter>
+                                    </filters>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
