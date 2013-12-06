@@ -24,8 +24,7 @@ public final class ItemLandEvent extends Event {
     private final Player player;
 
     /**
-     *
-     * @param item The Item that landed.
+     * @param item   The Item that landed.
      * @param player The Player who threw the Item.
      */
     public ItemLandEvent(final Item item, final Player player) {
@@ -35,7 +34,6 @@ public final class ItemLandEvent extends Event {
     }
 
     /**
-     *
      * @return the Item that landed.
      */
     public Item getItem() {
@@ -43,7 +41,6 @@ public final class ItemLandEvent extends Event {
     }
 
     /**
-     *
      * @return the Location that the Item landed at.
      */
     public Location getLocation() {
@@ -51,7 +48,6 @@ public final class ItemLandEvent extends Event {
     }
 
     /**
-     *
      * @return the Player who threw the Item.
      */
     public Player getPlayer() {
@@ -59,7 +55,6 @@ public final class ItemLandEvent extends Event {
     }
 
     /**
-     *
      * @return the Block that the Item landed on.
      */
     public Block getBlock() {

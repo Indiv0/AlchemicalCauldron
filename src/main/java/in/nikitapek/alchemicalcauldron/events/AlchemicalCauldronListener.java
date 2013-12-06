@@ -101,9 +101,8 @@ public final class AlchemicalCauldronListener implements Listener {
     }
 
     /**
-     *
-     * @param item the Item to be alchemized.
-     * @param block the cauldron Block.
+     * @param item   the Item to be alchemized.
+     * @param block  the cauldron Block.
      * @param player the Player who threw the Item.
      */
     private void alchemizeItemStack(final Item item, final Block block, final Player player) {

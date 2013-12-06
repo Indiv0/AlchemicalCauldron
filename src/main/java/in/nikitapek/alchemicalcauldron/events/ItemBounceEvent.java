@@ -23,10 +23,9 @@ public final class ItemBounceEvent extends Event {
     private final Player player;
 
     /**
-     *
-     * @param item the Item that bounced.
+     * @param item     the Item that bounced.
      * @param location the Location that the nadir of the bounce occured at.
-     * @param player the Player who threw the Item.
+     * @param player   the Player who threw the Item.
      */
     public ItemBounceEvent(final Item item, final Location location, final Player player) {
         this.item = item;
@@ -35,7 +34,6 @@ public final class ItemBounceEvent extends Event {
     }
 
     /**
-     *
      * @return the Item that bounced.
      */
     public Item getItem() {
@@ -43,7 +41,6 @@ public final class ItemBounceEvent extends Event {
     }
 
     /**
-     *
      * @return the Location that the nadir of the bounce occured at.
      */
     public Location getLocation() {
@@ -51,7 +48,6 @@ public final class ItemBounceEvent extends Event {
     }
 
     /**
-     *
      * @return the Player who threw the Item.
      */
     public Player getPlayer() {
