@@ -13,7 +13,7 @@
     <parent>
         <groupId>com.amshulman</groupId>
         <artifactId>bukkit-parent</artifactId>
-        <version>0.15</version>
+        <version>0.16</version>
     </parent>
 
     <repositories>
