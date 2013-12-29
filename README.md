@@ -8,8 +8,8 @@ It is meant to encourage and enhance roleplay on servers by introducing an alche
 
 ### Download
 
-You can find various releases of the plugin at my [maven repository](http://maven.nikitapek.in/repository/internal/in/nikitapek/alchemical-cauldron/).
-Alternatively, you can find downloads with detailed changelog information in the [files](http://dev.bukkit.org/bukkit-plugins/alchemicalcauldron/files/) section of the plugin's BukkitDev page.
+You can find the latest builds of the plugin at my [ci](http://ci.nikitapek.in/job/alchemical-cauldron/).
+You can find stable downloads with detailed changelog information in the [files](http://dev.bukkit.org/bukkit-plugins/alchemicalcauldron/files/) section of the plugin's BukkitDev page.
 
 ### Installation
 
@@ -27,9 +27,8 @@ AlchemicalCauldron does not have a formal API at the moment, but you can downloa
 
     <repositories>
       <repository>
-        <id>internal</id>
-        <name>Indiv0's Repo</name>
-        <url>http://maven.nikitapek.in/repository/internal/</url>
+        <id>indiv0's Repo</id>
+        <url>http://repo.nikitapek.in/maven/releases</url>
       </repository>
     </repositories>
 
@@ -38,5 +37,5 @@ AlchemicalCauldron does not have a formal API at the moment, but you can downloa
     <dependency>
       <groupId>in.nikitapek</groupId>
       <artifactId>alchemical-cauldron</artifactId>
-      <version>1.12.0</version>
+      <version>1.16.0</version>
     </dependency>
