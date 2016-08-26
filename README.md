@@ -1,4 +1,4 @@
-# AlchemicalCauldron [![Travis CI](https://secure.travis-ci.org/Indiv0/alchemical-cauldron.png)](http://travis-ci.org/#!/Indiv0/alchemical-cauldron)
+# [INACTIVE] AlchemicalCauldron [![Travis CI](https://secure.travis-ci.org/Indiv0/alchemical-cauldron.png)](http://travis-ci.org/#!/Indiv0/alchemical-cauldron)
 
 AlchemicalCauldron is a plugin for Bukkit which is used for converting items thrown into a cauldron into other items (e.g. dirt into iron ore).
 It is meant to encourage and enhance roleplay on servers by introducing an alchemy aspect into the game.
